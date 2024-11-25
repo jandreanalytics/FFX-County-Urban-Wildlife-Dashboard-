@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fairfax County Biodiversity Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Fairfax County Biodiversity Explorer</h1>
+        <p class="subtitle">Discover the natural world in your backyard</p>
+        <nav>
+            <button id="showAll" class="active">All Species</button>
+            <button id="showPlants">Plants</button>
+            <button id="showAnimals">Animals</button>
+            <button id="showFungi">Fungi</button>
+        </nav>
+    </header>
+
+    <div id="error-message" class="hidden">
+        Error loading data. Please try refreshing the page.
+    </div>
+
+    <main>
+        <!-- Quick Stats Banner -->
+        <div class="quick-stats">
+            <div class="stat-card">
+                <h3>Species Found</h3>
+                <span id="speciesCount">831</span>
+            </div>
+            <div class="stat-card">
+                <h3>This Month</h3>
+                <span id="monthlyCount">124</span>
+            </div>
+            <div class="stat-card">
+                <h3>Recent Hotspot</h3>
+                <span id="hotspot">Burke Lake Park</span>
+            </div>
+        </div>
+
+        <!-- Main Dashboard -->
+        <div class="dashboard-grid">
+            <div class="map-container">
+                <h2>Observation Map</h2>
+                <div id="map"></div>
+                <div class="map-legend">
+                    <span class="legend-item">🟢 Recent (Last 7 days)</span>
+                    <span class="legend-item">🔵 This Month</span>
+                    <span class="legend-item">⚪ Older</span>
+                </div>
+            </div>
+
+            <div class="insights-panel">
+                <h2>Seasonal Highlights</h2>
+                <div id="seasonal-chart"></div>
+                <div class="seasonal-tips">
+                    <h3>What to Look For Now</h3>
+                    <ul id="seasonal-species"></ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Community Section -->
+        <div class="recent-findings">
+            <h2>Recent Discoveries</h2>
+            <div id="observations-grid"></div>
+        </div>
+    </main>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
