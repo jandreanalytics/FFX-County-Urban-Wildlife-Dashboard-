@@ -27,10 +27,44 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
     minZoom: 9
 }).addTo(map);
 
-// Use a cluster group for markers
+// Add this new cluster icon creator function
+function createCustomClusterIcon(cluster) {
+    const markers = cluster.getAllChildMarkers();
+    const total = markers.length;
+    
+    // Get the dominant group (most common)
+    const groups = markers.reduce((acc, marker) => {
+        const className = marker.options.icon.options.className;
+        const group = className.split('-')[1];
+        acc[group] = (acc[group] || 0) + 1;
+        return acc;
+    }, {});
+    
+    const dominantGroup = Object.entries(groups)
+        .sort((a, b) => b[1] - a[1])[0][0];
+
+    return L.divIcon({
+        html: `
+            <div class="custom-cluster marker-${dominantGroup}">
+                <div class="cluster-dot">
+                    <span>${total}</span>
+                </div>
+            </div>
+        `,
+        className: 'cluster-icon',
+        iconSize: L.point(40, 40)
+    });
+}
+
+// Update only the cluster group initialization
 let markers = L.markerClusterGroup({
     chunkedLoading: true,
-    maxClusterRadius: 50
+    maxClusterRadius: 60,
+    iconCreateFunction: createCustomClusterIcon,
+    spiderfyOnMaxZoom: true,
+    showCoverageOnHover: false,
+    zoomToBoundsOnClick: true,
+    disableClusteringAtZoom: 19
 }).addTo(map);
 
 // Store chart instances
@@ -67,11 +101,12 @@ function updateMap(observations) {
         if (isNaN(lat) || isNaN(lng)) return null;
         
         const taxonomicGroup = (obs.taxonomic_group || 'unknown').toLowerCase();
+        const emoji = getEmoji(taxonomicGroup);
         
         return L.marker([lat, lng], {
             icon: L.divIcon({
-                className: `marker-${taxonomicGroup}`,
-                html: `<div class="marker-dot"></div>`
+                className: `marker-${taxonomicGroup} emoji-marker`,
+                html: `<div class="emoji-container">${emoji}</div>`
             })
         }).bindPopup(createPopupContent(obs));
     }).filter(Boolean);
@@ -85,9 +120,10 @@ async function initializeDashboard() {
         showLoadingState();
         initializeSeasonButtons();
         
-        const initialData = await loadYearlyData([2024], 1, 100);
-        console.log('Initial data loaded:', initialData);
+        // Load boundary first
+        const boundary = await loadFairfaxBoundary();
         
+        const initialData = await loadYearlyData([2024], 1, 100);
         if (initialData.length === 0) {
             console.error('No initial data loaded');
             return;
@@ -97,6 +133,24 @@ async function initializeDashboard() {
         updateBiodiversityStats(initialData);
         displayLatestDiscoveries(initialData);
         
+        // Create markers group including all data points
+        const points = initialData.map(obs => {
+            if (!obs.location) return null;
+            const [lat, lng] = obs.location.split(',').map(Number);
+            if (isNaN(lat) || isNaN(lng)) return null;
+            return [lat, lng];
+        }).filter(Boolean);
+
+        // Fit map to show all points and boundary
+        if (points.length > 0) {
+            const bounds = L.latLngBounds(points);
+            map.fitBounds(bounds, {
+                padding: [50, 50],
+                maxZoom: 12
+            });
+        }
+        
+        addMapLegend();
     } catch (error) {
         console.error('Error initializing dashboard:', error);
     }
@@ -186,7 +240,10 @@ function displayLatestDiscoveries(observations, filters = {}) {
 
     recentDiv.innerHTML = `
         <div class="recent-header">
-            <h2>${title}</h2>
+            <div class="title-section">
+                <h2>${title}</h2>
+                <p class="discovery-subtitle">Click any species card to filter map markers. Most frequent sightings shown first.</p>
+            </div>
             <span class="observation-count">Showing ${observations.length} observations</span>
         </div>
         <div class="recent-grid">
@@ -212,8 +269,12 @@ function displayLatestDiscoveries(observations, filters = {}) {
     recentDiv.querySelectorAll('.recent-card').forEach(card => {
         card.addEventListener('click', () => {
             const species = card.dataset.species;
-            const speciesData = groupedObservations[species];
-            showSpeciesDetail(species, speciesData);
+            filterMapBySpecies(species);
+            
+            // Highlight the selected card
+            document.querySelectorAll('.recent-card').forEach(c => 
+                c.classList.remove('selected'));
+            card.classList.add('selected');
         });
     });
 }
@@ -372,5 +433,139 @@ function showLoadingState() {
             <div class="loading-indicator"></div>
         `;
     }
+}
+
+// Add this function for species filtering
+function filterMapBySpecies(speciesName) {
+    const year = document.getElementById('yearFilter').value;
+    
+    // Remove existing clear filter button if it exists
+    document.querySelector('.clear-filter-btn')?.remove();
+    
+    loadYearlyData([year]).then(data => {
+        const speciesData = data.filter(obs => 
+            (obs.common_name === speciesName || obs.species_name === speciesName)
+        );
+        
+        updateMap(speciesData);
+        
+        // Add new clear filter button
+        const clearButton = L.control({position: 'topright'});
+        clearButton.onAdd = function() {
+            const div = L.DomUtil.create('div', 'clear-filter-btn');
+            div.innerHTML = `
+                <button onclick="resetMapFilter()">
+                    ← Show All Species
+                </button>
+            `;
+            return div;
+        };
+        clearButton.addTo(map);
+    });
+}
+
+// Modify the resetMapFilter function to respect current filters
+function resetMapFilter() {
+    const year = document.getElementById('yearFilter').value;
+    const taxonomicFilter = document.getElementById('taxonomicFilter').value;
+    
+    loadYearlyData([year]).then(data => {
+        let filteredData = data;
+        
+        // Maintain taxonomic filter if it's active
+        if (taxonomicFilter !== 'all') {
+            filteredData = data.filter(obs => obs.taxonomic_group === taxonomicFilter);
+        }
+        
+        updateMap(filteredData);
+        // Remove the clear filter button
+        document.querySelector('.clear-filter-btn')?.remove();
+        
+        // Remove selected state from cards
+        document.querySelectorAll('.recent-card').forEach(c => 
+            c.classList.remove('selected'));
+    });
+}
+
+// Add this new function
+function addMapLegend() {
+    const legend = L.control({ position: 'bottomright' });
+    legend.onAdd = function() {
+        const div = L.DomUtil.create('div', 'info legend');
+        const groups = [
+            { name: 'Birds', class: 'aves', emoji: '🦅' },
+            { name: 'Mammals', class: 'mammalia', emoji: '🦌' },
+            { name: 'Plants', class: 'plantae', emoji: '🌿' },
+            { name: 'Reptiles', class: 'reptilia', emoji: '🦎' },
+            { name: 'Amphibians', class: 'amphibia', emoji: '🐸' },
+            { name: 'Insects', class: 'insecta', emoji: '🦋' },
+            { name: 'Fish', class: 'actinopterygii', emoji: '🐟' }
+        ];
+
+
+        div.innerHTML = `
+        <div class="legend-content">
+            <h4>Reported Animal Groups</h4>
+            <p class="legend-subtitle">Cluster colors reflect most reported species</p>
+            ${groups.map(group => `
+                <div class="legend-item">
+                    <span class="legend-emoji">${group.emoji}</span>
+                    <span class="legend-marker marker-${group.class}">
+                        <div class="marker-dot"></div>
+                    </span>
+                    <span>${group.name}</span>
+                </div>
+            `).join('')}
+        </div>
+    `;
+    return div;
+};
+// KEEP EXISTING FUNCTION ENDING
+legend.addTo(map);
+}
+
+// Add this helper function
+function getEmoji(taxonomicGroup) {
+    const emojiMap = {
+        'aves': '🦅',
+        'mammalia': '🦌',
+        'plantae': '🌿',
+        'reptilia': '🦎',
+        'amphibia': '🐸',
+        'insecta': '🦋',
+        'actinopterygii': '🐟',
+        'unknown': '❓'
+    };
+    return emojiMap[taxonomicGroup] || '❓';
+}
+
+// ADD THIS NEW FUNCTION - DO NOT MODIFY OTHER FUNCTIONS
+async function loadFairfaxBoundary() {
+    const boundaryStyle = {
+        color: "#4CAF50",
+        weight: 2,
+        opacity: 0.7,
+        fill: false
+    };
+
+    // Simplified Fairfax County boundary coordinates
+    const fairfaxBoundary = {
+        type: "Feature",
+        properties: {},
+        geometry: {
+            type: "Polygon",
+            coordinates: [[
+                [-77.5111, 38.5950],
+                [-77.1198, 38.5950],
+                [-77.1198, 39.0024],
+                [-77.5111, 39.0024],
+                [-77.5111, 38.5950]
+            ]]
+        }
+    };
+
+    return L.geoJSON(fairfaxBoundary, {
+        style: boundaryStyle
+    }).addTo(map);
 }
 
