@@ -6,71 +6,73 @@
     <title>Fairfax County Biodiversity Tracker</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <header>
         <h1>Fairfax County Biodiversity Explorer</h1>
-        <p class="subtitle">Discover the natural world in your backyard</p>
-        <nav>
-            <button id="showAll" class="active">All Species</button>
-            <button id="showPlants">Plants</button>
-            <button id="showAnimals">Animals</button>
-            <button id="showFungi">Fungi</button>
-        </nav>
     </header>
 
-    <div id="error-message" class="hidden">
-        Error loading data. Please try refreshing the page.
-    </div>
-
     <main>
-        <!-- Quick Stats Banner -->
-        <div class="quick-stats">
-            <div class="stat-card">
-                <h3>Species Found</h3>
-                <span id="speciesCount">831</span>
+        <div class="dashboard-controls">
+            <!-- Simplified filters with clear labels -->
+            <div class="filter-group">
+                <label for="taxonomicFilter">What are you looking for?</label>
+                <select id="taxonomicFilter">
+                    <option value="all">All Wildlife</option>
+                    <option value="Aves">Birds</option>
+                    <option value="Mammalia">Mammals</option>
+                    <option value="Plantae">Plants</option>
+                    <!-- etc -->
+                </select>
             </div>
-            <div class="stat-card">
-                <h3>This Month</h3>
-                <span id="monthlyCount">124</span>
+
+            <div class="filter-group">
+                <label for="yearFilter">From which year?</label>
+                <select id="yearFilter">
+                    <!-- populated via JavaScript -->
+                </select>
             </div>
-            <div class="stat-card">
-                <h3>Recent Hotspot</h3>
-                <span id="hotspot">Burke Lake Park</span>
+
+            <div class="filter-group">
+                <label>Which season?</label>
+                <div class="season-buttons">
+                    <button data-season="spring">🌱 Spring</button>
+                    <button data-season="summer">☀️ Summer</button>
+                    <button data-season="fall">🍂 Fall</button>
+                    <button data-season="winter">❄️ Winter</button>
+                </div>
             </div>
         </div>
 
-        <!-- Main Dashboard -->
+        <!-- Reorganized layout -->
         <div class="dashboard-grid">
-            <div class="map-container">
-                <h2>Observation Map</h2>
+            <!-- Map takes primary focus -->
+            <div class="map-section">
+                <h2>Wildlife Sightings Map</h2>
                 <div id="map"></div>
-                <div class="map-legend">
-                    <span class="legend-item">🟢 Recent (Last 7 days)</span>
-                    <span class="legend-item">🔵 This Month</span>
-                    <span class="legend-item">⚪ Older</span>
-                </div>
             </div>
 
-            <div class="insights-panel">
-                <h2>Seasonal Highlights</h2>
-                <div id="seasonal-chart"></div>
-                <div class="seasonal-tips">
-                    <h3>What to Look For Now</h3>
-                    <ul id="seasonal-species"></ul>
+            <!-- Recent sightings below map -->
+            <div class="recent-sightings-section">
+                <div id="recentObservations"></div>
+            </div>
+
+            <!-- Stats section on the right -->
+            <div class="stats-section">
+                <h2>Wildlife Statistics</h2>
+                <div class="stats-panel">
+                    <div id="biodiversityStats"></div>
+                    <div id="temporalChart"></div>
                 </div>
             </div>
-        </div>
-
-        <!-- Community Section -->
-        <div class="recent-findings">
-            <h2>Recent Discoveries</h2>
-            <div id="observations-grid"></div>
         </div>
     </main>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
