@@ -56,7 +56,6 @@ async function loadYearlyData(years = [2023], page = 1, perPage = 100) {
     }
     return allData;
 }
-
 // Map update function
 function updateMap(observations) {
     markers.clearLayers();
@@ -83,7 +82,7 @@ function updateMap(observations) {
 // Initialize dashboard
 async function initializeDashboard() {
     try {
-        console.log('Initializing dashboard...');
+        showLoadingState();
         initializeSeasonButtons();
         
         const initialData = await loadYearlyData([2024], 1, 100);
@@ -96,11 +95,7 @@ async function initializeDashboard() {
         
         updateMap(initialData);
         updateBiodiversityStats(initialData);
-        
-        // Fetch and display recent observations
-        const recentObs = await fetchRecentObservations();
-        console.log('Recent observations fetched:', recentObs);
-        displayLatestDiscoveries(recentObs);
+        displayLatestDiscoveries(initialData);
         
     } catch (error) {
         console.error('Error initializing dashboard:', error);
@@ -365,3 +360,17 @@ function initializeSeasonButtons() {
         });
     });
 }
+
+// Add this at the start of your data loading functions
+function showLoadingState() {
+    const recentDiv = document.getElementById('recentObservations');
+    if (recentDiv) {
+        recentDiv.innerHTML = `
+            <div class="recent-header">
+                <h2>Loading discoveries...</h2>
+            </div>
+            <div class="loading-indicator"></div>
+        `;
+    }
+}
+
