@@ -599,6 +599,7 @@ function showSpeciesDetail(species, data) {
 document.addEventListener('DOMContentLoaded', () => {
     populateYearFilter();
     initializeDashboard();
+    populateSpeciesSearch();  // Add this line to initialize species search
     
     // Add filter listeners
     document.getElementById('taxonomicFilter')?.addEventListener('change', handleFilterChange);
@@ -606,6 +607,23 @@ document.addEventListener('DOMContentLoaded', () => {
     
     document.querySelectorAll('.season-buttons button')
         .forEach(btn => btn.addEventListener('click', handleSeasonSelect));
+    
+    document.getElementById('speciesSearch').addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+        if (searchTerm.length > 0) {
+            const options = document.querySelectorAll('#speciesOptions option');
+            const match = Array.from(options).find(option => option.value.toLowerCase() === searchTerm);
+            if (match) {
+                filterMapBySpecies(match.value);
+            }
+        }
+    });
+
+    // Add event listener for help button
+    document.getElementById('helpToggle').addEventListener('click', () => {
+        const helpPanel = document.getElementById('helpPanel');
+        helpPanel.classList.toggle('visible');
+    });
 });
 
 // Filter handling functions
@@ -631,7 +649,7 @@ function handleSeasonSelect(event) {
     event.target.classList.add('active');
     
     const year = document.getElementById('yearFilter').value;
-    const filter = { season, year };
+    const filter = { season: season === 'all' ? null : season, year };
     
     loadYearlyData([year]).then(data => {
         const filteredData = filterObservations(data, filter);
@@ -674,6 +692,40 @@ function showLoadingState() {
     }
 }
 
+// Add this function to fetch and populate species data
+async function populateSpeciesSearch() {
+    const speciesSearch = document.getElementById('speciesSearch');
+    if (!speciesSearch) return;
+
+    try {
+        const data = await loadYearlyData(YEARS_AVAILABLE);
+        const speciesCount = {};
+
+        data.forEach(obs => {
+            const species = obs.common_name || obs.species_name;
+            if (species) {
+                speciesCount[species] = (speciesCount[species] || 0) + 1;
+            }
+        });
+
+        const sortedSpecies = Object.entries(speciesCount)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 5)
+            .map(([species]) => species);
+
+        const datalist = document.getElementById('speciesOptions');
+        datalist.innerHTML = '';
+
+        sortedSpecies.forEach(species => {
+            const option = document.createElement('option');
+            option.value = species;
+            datalist.appendChild(option);
+        });
+    } catch (error) {
+        console.error('Error populating species search:', error);
+    }
+}
+
 // Add this function for species filtering
 function filterMapBySpecies(speciesName) {
     const year = document.getElementById('yearFilter').value;
@@ -683,10 +735,11 @@ function filterMapBySpecies(speciesName) {
     
     loadYearlyData([year]).then(data => {
         const speciesData = data.filter(obs => 
-            (obs.common_name === speciesName || obs.species_name === speciesName)
+            (obs.common_name.toLowerCase() === speciesName.toLowerCase() || obs.species_name.toLowerCase() === speciesName.toLowerCase())
         );
         
         updateMap(speciesData);
+        displayLatestDiscoveries(speciesData, { year, species: speciesName });
         
         // Add new clear filter button
         const clearButton = L.control({position: 'topright'});
@@ -717,6 +770,8 @@ function resetMapFilter() {
         }
         
         updateMap(filteredData);
+        displayLatestDiscoveries(filteredData, { year });
+        
         // Remove the clear filter button
         document.querySelector('.clear-filter-btn')?.remove();
         
@@ -798,3 +853,8 @@ function createSpeciesLink(speciesName) {
     };
 }
 
+// Add to script.js
+document.getElementById('speciesSearch').addEventListener('input', (e) => {
+    const searchTerm = e.target.value.toLowerCase();
+    // Implement search logic here
+});

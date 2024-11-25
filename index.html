@@ -13,7 +13,32 @@
 </head>
 <body>
     <header>
-        <h1>Fairfax County Biodiversity Explorer</h1>
+        <div class="header-content">
+            <h1>Fairfax County Biodiversity Explorer</h1>
+            <button id="helpToggle" class="help-button">
+                <span>❔</span> How to Use
+            </button>
+        </div>
+        <div id="helpPanel" class="help-panel hidden">
+            <div class="help-grid">
+                <div class="help-item">
+                    <span>🔍</span>
+                    <p>Search by species name or filter by category</p>
+                </div>
+                <div class="help-item">
+                    <span>📅</span>
+                    <p>Select year and season to see wildlife patterns</p>
+                </div>
+                <div class="help-item">
+                    <span>📸</span>
+                    <p>Click photos to see detailed sightings</p>
+                </div>
+                <div class="help-item">
+                    <span>📊</span>
+                    <p>View statistics and trends in the side panel</p>
+                </div>
+            </div>
+        </div>
     </header>
 
     <main>
@@ -40,11 +65,19 @@
             <div class="filter-group">
                 <label>Which season?</label>
                 <div class="season-buttons">
+                    <button data-season="all" class="active">🗓️ All Seasons</button>
                     <button data-season="spring">🌱 Spring</button>
                     <button data-season="summer">☀️ Summer</button>
                     <button data-season="fall">🍂 Fall</button>
                     <button data-season="winter">❄️ Winter</button>
                 </div>
+            </div>
+
+            <!-- Add search filter group -->
+            <div class="filter-group">
+                <label for="speciesSearch">Which species?</label>
+                <input type="text" id="speciesSearch" list="speciesOptions" placeholder="e.g. Cardinal, American Robin">
+                <datalist id="speciesOptions"></datalist>
             </div>
         </div>
 
@@ -52,7 +85,6 @@
         <div class="dashboard-grid">
             <!-- Map takes primary focus -->
             <div class="map-section">
-                <h2>Wildlife Sightings Map</h2>
                 <div id="map"></div>
             </div>
 
@@ -76,4 +108,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-
