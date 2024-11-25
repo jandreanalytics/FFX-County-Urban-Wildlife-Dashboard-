@@ -1,7 +1,7 @@
 {
   "year": 2017,
-  "total_count": 8003,
-  "last_updated": "2024-11-24T18:46:58.614060",
+  "total_count": 8004,
+  "last_updated": "2024-11-25T13:52:35.295193",
   "observations": [
     {
       "id": 252744350,
@@ -96036,6 +96036,18 @@
       "location": "38.888675631,-77.1501681713",
       "place_guess": "Highland Park, Arlington, VA 22205, USA",
       "photo_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/5933694/square.jpeg",
+      "scientific_name": null,
+      "coordinates": null
+    },
+    {
+      "id": 8646840,
+      "observed_on": "2017-06-02",
+      "species_name": "Psyche casta",
+      "common_name": "Common Bagworm Moth",
+      "taxonomic_group": "Insecta",
+      "location": "38.8892045537,-77.1518493018",
+      "place_guess": "East Falls Church, Arlington, VA",
+      "photo_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/11576935/square.jpeg",
       "scientific_name": null,
       "coordinates": null
     }

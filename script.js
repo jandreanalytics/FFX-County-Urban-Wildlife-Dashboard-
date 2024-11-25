@@ -6,6 +6,7 @@ const FAIRFAX_BOUNDS = {
     nelat: 39.0024,
     nelng: -77.1198
 };
+
 const YEARS_AVAILABLE = Array.from({length: 9}, (_, i) => 2024 - i);
 const SEASONS = {
     spring: [2,3,4],
@@ -206,7 +207,7 @@ function displayLatestDiscoveries(observations, filters = {}) {
         title += ` ${filters.year}`;
     }
     if (!filters.season && !filters.year) {
-        title = 'Latest Discoveries';
+        title = 'Most Commonly Seen Wildlife';
     }
 
     const groupedObservations = observations.reduce((grouped, obs) => {
@@ -259,20 +260,46 @@ function displayLatestDiscoveries(observations, filters = {}) {
         </div>
     `;
 
+    recentDiv.style.height = 'auto';  // Remove any fixed heights
+
     // Add click handlers for species cards
     recentDiv.querySelectorAll('.recent-card').forEach(card => {
-        card.addEventListener('click', () => {
+        card.addEventListener('click', (e) => {
+            e.preventDefault();
             const species = card.dataset.species;
-            filterMapBySpecies(species);
-            
-            // Highlight the selected card
-            document.querySelectorAll('.recent-card').forEach(c => 
-                c.classList.remove('selected'));
-            card.classList.add('selected');
+            if (species) {
+                filterMapBySpecies(species);
+                
+                // Remove previous selections
+                document.querySelectorAll('.recent-card').forEach(c => 
+                    c.classList.remove('selected'));
+                // Add selected class to clicked card
+                card.classList.add('selected');
+            }
         });
     });
 }
 // Stats functions
+// Add environmental indicators data
+const ENVIRONMENTAL_INDICATORS = {
+    invasiveSpecies: [
+        { name: 'Japanese Honeysuckle', prevalence: 'High' },
+        { name: 'Kudzu', prevalence: 'Moderate' },
+        { name: 'English Ivy', prevalence: 'High' }
+    ],
+    nativeSpecies: [
+        { name: 'Eastern Redbud', prevalence: 'Common' },
+        { name: 'Virginia Bluebells', prevalence: 'Common' },
+        { name: 'American Beech', prevalence: 'Common' }
+    ],
+    pollinatorSpecies: [
+        { name: 'Monarch Butterfly', prevalence: 'Moderate' },
+        { name: 'Eastern Bumblebee', prevalence: 'Common' },
+        { name: 'Ruby-throated Hummingbird', prevalence: 'Moderate' }
+    ]
+};
+
+// Update the updateBiodiversityStats function to include yearly comparisons and environmental indicators
 async function updateBiodiversityStats(observations) {
     const statsDiv = document.getElementById('biodiversityStats');
     if (!statsDiv) return;
@@ -327,6 +354,12 @@ async function updateBiodiversityStats(observations) {
         return acc;
     }, {});
 
+    // Add yearly comparisons
+    const yearlyData = YEARS_AVAILABLE.reduce((acc, year) => {
+        acc[year] = observations.filter(obs => new Date(obs.observed_on).getFullYear() === year).length;
+        return acc;
+    }, {});
+
     statsDiv.innerHTML = `
         <div class="wildlife-statistics">
             <h2>Wildlife Statistics</h2>
@@ -356,6 +389,37 @@ async function updateBiodiversityStats(observations) {
                 <h3>Monthly Trends</h3>
                 <div class="chart-container">
                     <canvas id="monthlyChart"></canvas>
+                </div>
+            </div>
+
+            <div class="stat-section">
+                <h3>Yearly Comparisons</h3>
+                <div class="chart-container">
+                    <canvas id="yearlyChart"></canvas>
+                </div>
+            </div>
+
+            <div class="stat-section">
+                <h3>Environmental Indicators</h3>
+                <div class="environmental-indicators">
+                    <h4>Invasive Species</h4>
+                    <ul>
+                        ${ENVIRONMENTAL_INDICATORS.invasiveSpecies.map(species => `
+                            <li>${species.name} - Prevalence: ${species.prevalence}</li>
+                        `).join('')}
+                    </ul>
+                    <h4>Native Species</h4>
+                    <ul>
+                        ${ENVIRONMENTAL_INDICATORS.nativeSpecies.map(species => `
+                            <li>${species.name} - Prevalence: ${species.prevalence}</li>
+                        `).join('')}
+                    </ul>
+                    <h4>Pollinator Species</h4>
+                    <ul>
+                        ${ENVIRONMENTAL_INDICATORS.pollinatorSpecies.map(species => `
+                            <li>${species.name} - Prevalence: ${species.prevalence}</li>
+                        `).join('')}
+                    </ul>
                 </div>
             </div>
         </div>
@@ -529,6 +593,41 @@ async function updateBiodiversityStats(observations) {
             maintainAspectRatio: false
         }
     });
+
+    // Add Yearly Comparisons Chart (Line)
+    new Chart(document.getElementById('yearlyChart'), {
+        type: 'line',
+        data: {
+            labels: YEARS_AVAILABLE,
+            datasets: [{
+                label: 'Sightings',
+                data: Object.values(yearlyData),
+                borderColor: '#4CAF50',
+                backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                tension: 0.3,
+                fill: true
+            }]
+        },
+        options: {
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: { display: false },
+                    title: {
+                        display: true,
+                        text: 'Number of Sightings'
+                    }
+                },
+                x: {
+                    grid: { display: false }
+                }
+            },
+            maintainAspectRatio: false
+        }
+    });
 }
 
 // UI Helper functions
@@ -623,6 +722,20 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('helpToggle').addEventListener('click', () => {
         const helpPanel = document.getElementById('helpPanel');
         helpPanel.classList.toggle('visible');
+    });
+    
+    // Add reset button handler
+    document.getElementById('resetFilters').addEventListener('click', () => {
+        // Reset all filters
+        document.getElementById('taxonomicFilter').value = 'all';
+        document.getElementById('speciesSearch').value = '';
+        document.querySelectorAll('.season-buttons button').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.querySelector('[data-season="all"]').classList.add('active');
+        
+        // Reset the map and display
+        resetMapFilter();
     });
 });
 
@@ -734,25 +847,37 @@ function filterMapBySpecies(speciesName) {
     document.querySelector('.clear-filter-btn')?.remove();
     
     loadYearlyData([year]).then(data => {
-        const speciesData = data.filter(obs => 
-            (obs.common_name.toLowerCase() === speciesName.toLowerCase() || obs.species_name.toLowerCase() === speciesName.toLowerCase())
-        );
+        const speciesData = data.filter(obs => {
+            const obsName = (obs.common_name || obs.species_name || '').toLowerCase();
+            return obsName === speciesName.toLowerCase();
+        });
         
-        updateMap(speciesData);
-        displayLatestDiscoveries(speciesData, { year, species: speciesName });
-        
-        // Add new clear filter button
-        const clearButton = L.control({position: 'topright'});
-        clearButton.onAdd = function() {
-            const div = L.DomUtil.create('div', 'clear-filter-btn');
-            div.innerHTML = `
-                <button onclick="resetMapFilter()">
-                    ← Show All Species
-                </button>
-            `;
-            return div;
-        };
-        clearButton.addTo(map);
+        if (speciesData.length > 0) {
+            updateMap(speciesData);
+            displayLatestDiscoveries(speciesData, { year, species: speciesName });
+            
+            // Add new clear filter button
+            const clearButton = L.control({position: 'topright'});
+            clearButton.onAdd = function() {
+                const div = L.DomUtil.create('div', 'clear-filter-btn');
+                div.innerHTML = `
+                    <button onclick="resetMapFilter()">
+                        ← Show All Species
+                    </button>
+                `;
+                return div;
+            };
+            clearButton.addTo(map);
+
+            // Fit map to filtered markers
+            const markerBounds = markers.getBounds();
+            if (markerBounds.isValid()) {
+                map.fitBounds(markerBounds, {
+                    padding: [50, 50],
+                    maxZoom: 13
+                });
+            }
+        }
     });
 }
 
@@ -858,3 +983,45 @@ document.getElementById('speciesSearch').addEventListener('input', (e) => {
     const searchTerm = e.target.value.toLowerCase();
     // Implement search logic here
 });
+
+function addSearchHistory() {
+    const searches = JSON.parse(localStorage.getItem('recentSearches') || '[]');
+    const searchContainer = document.createElement('div');
+    searchContainer.className = 'recent-searches';
+    searchContainer.innerHTML = `
+        <h4>Recent Searches</h4>
+        ${searches.map(search => `
+            <button onclick="applySearch('${search}')">${search}</button>
+        `).join('')}
+    `;
+    document.querySelector('.filter-group').appendChild(searchContainer);
+}
+
+// Add to script.js
+let invasiveSpeciesList = []; // Will be populated from JSON
+
+async function loadInvasiveSpecies() {
+    try {
+        const response = await fetch('path/to/invasive-species.json');
+        invasiveSpeciesList = await response.json();
+    } catch (error) {
+        console.error('Error loading invasive species list:', error);
+    }
+}
+
+document.getElementById('invasiveFilter').addEventListener('click', function() {
+    this.classList.toggle('active');
+    if (this.classList.contains('active')) {
+        filterInvasiveSpecies();
+    } else {
+        resetFilters();
+    }
+});
+
+function filterInvasiveSpecies() {
+    const filteredObservations = observations.filter(obs => 
+        invasiveSpeciesList.includes(obs.scientific_name)
+    );
+    displayLatestDiscoveries(filteredObservations);
+    updateMap(filteredObservations);
+}
