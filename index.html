@@ -8,8 +8,10 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js" defer></script>
+    <script src="script.js" defer></script>
 </head>
 <body>
     <header>
@@ -92,9 +94,6 @@
                 <button id="pollinatorFilter" class="filter-button pollinator">
                     🐝 Pollinators
                 </button>
-                <button id="rareFilter" class="filter-button rare">
-                    ⭐ Rare Sightings
-                </button>
                 <button id="protectedFilter" class="filter-button protected">
                     🛡️ Protected Species
                 </button>
@@ -123,8 +122,5 @@
         </div>
     </main>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
-    <script src="script.js"></script>
 </body>
 </html>

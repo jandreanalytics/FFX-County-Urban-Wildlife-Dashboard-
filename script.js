@@ -14,6 +14,217 @@ const SEASONS = {
     fall: [8,9,10],
     winter: [11,0,1]
 };
+// Define invasive species list directly
+const INVASIVE_SPECIES = [
+    // Mammals
+    {
+        name: "Myocastor coypus",
+        common_name: "Nutria",
+        type: "Mammal",
+        description: "Semi-aquatic rodent that damages wetland ecosystems"
+    },
+    {
+        name: "Sus scrofa",
+        common_name: "Feral Pig",
+        type: "Mammal",
+        description: "Destructive mammal that damages soil and native vegetation"
+    },
+    // Birds
+    {
+        name: "Sturnus vulgaris",
+        common_name: "European Starling",
+        type: "Bird",
+        description: "Aggressive bird that competes with native cavity-nesters"
+    },
+    {
+        name: "Passer domesticus",
+        common_name: "House Sparrow",
+        type: "Bird",
+        description: "Invasive bird that displaces native species"
+    },
+    {
+        name: "Cygnus olor",
+        common_name: "Mute Swan",
+        type: "Bird",
+        description: "Large waterfowl that damages aquatic vegetation"
+    },
+    // Fish
+    {
+        name: "Channa argus",
+        common_name: "Northern Snakehead",
+        type: "Fish",
+        description: "Predatory fish that impacts native aquatic species"
+    },
+    {
+        name: "Ictalurus furcatus",
+        common_name: "Blue Catfish",
+        type: "Fish",
+        description: "Large catfish that outcompetes native species"
+    },
+    {
+        name: "Cyprinus carpio",
+        common_name: "Common Carp",
+        type: "Fish",
+        description: "Bottom-feeding fish that degrades water quality"
+    },
+    // Reptiles and Amphibians
+    {
+        name: "Trachemys scripta elegans",
+        common_name: "Red-Eared Slider",
+        type: "Reptile",
+        description: "Turtle that competes with native species"
+    },
+    // Insects
+    {
+        name: "Lycorma delicatula",
+        common_name: "Spotted Lanternfly",
+        type: "Insect",
+        description: "Plant hopper that damages trees and crops"
+    },
+    {
+        name: "Agrilus planipennis",
+        common_name: "Emerald Ash Borer",
+        type: "Insect",
+        description: "Beetle that kills ash trees"
+    },
+    {
+        name: "Anoplophora glabripennis",
+        common_name: "Asian Longhorned Beetle",
+        type: "Insect",
+        description: "Wood-boring beetle that kills hardwood trees"
+    },
+    {
+        name: "Halyomorpha halys",
+        common_name: "Brown Marmorated Stink Bug",
+        type: "Insect",
+        description: "Agricultural pest that damages crops"
+    },
+    {
+        name: "Adelges tsugae",
+        common_name: "Hemlock Woolly Adelgid",
+        type: "Insect",
+        description: "Insect that kills hemlock trees"
+    },
+    {
+        name: "Lymantria dispar dispar",
+        common_name: "Gypsy Moth",
+        type: "Insect",
+        description: "Caterpillar that defoliates trees"
+    },
+    {
+        name: "Aedes albopictus",
+        common_name: "Asian Tiger Mosquito",
+        type: "Insect",
+        description: "Disease-carrying mosquito"
+    },
+    // Mollusks
+    {
+        name: "Dreissena polymorpha",
+        common_name: "Zebra Mussel",
+        type: "Mollusk",
+        description: "Filter feeder that alters aquatic ecosystems"
+    },
+    {
+        name: "Corbicula fluminea",
+        common_name: "Asian Clam",
+        type: "Mollusk",
+        description: "Clam that alters aquatic habitats"
+    },
+    // Plants - Trees and Shrubs
+    {
+        name: "Ailanthus altissima",
+        common_name: "Tree of Heaven",
+        type: "Tree",
+        description: "Fast-growing tree that displaces native species"
+    },
+    {
+        name: "Elaeagnus umbellata",
+        common_name: "Autumn Olive",
+        type: "Shrub",
+        description: "Shrub that alters soil chemistry"
+    },
+    {
+        name: "Berberis thunbergii",
+        common_name: "Japanese Barberry",
+        type: "Shrub",
+        description: "Thorny shrub that forms dense thickets"
+    },
+    {
+        name: "Paulownia tomentosa",
+        common_name: "Princess Tree",
+        type: "Tree",
+        description: "Fast-growing tree that outcompetes native species"
+    },
+    {
+        name: "Ligustrum sinense",
+        common_name: "Chinese Privet",
+        type: "Shrub",
+        description: "Shrub that forms dense understory thickets"
+    },
+    // Vines
+    {
+        name: "Pueraria montana",
+        common_name: "Kudzu",
+        type: "Vine",
+        description: "Aggressive vine that smothers native vegetation"
+    },
+    {
+        name: "Lonicera japonica",
+        common_name: "Japanese Honeysuckle",
+        type: "Vine",
+        description: "Vine that overwhelms native vegetation"
+    },
+    {
+        name: "Celastrus orbiculatus",
+        common_name: "Oriental Bittersweet",
+        type: "Vine",
+        description: "Woody vine that strangles trees"
+    },
+    // Herbaceous Plants
+    {
+        name: "Alliaria petiolata",
+        common_name: "Garlic Mustard",
+        type: "Herb",
+        description: "Herb that inhibits native plant growth"
+    },
+    {
+        name: "Lythrum salicaria",
+        common_name: "Purple Loosestrife",
+        type: "Herb",
+        description: "Wetland plant that crowds out natives"
+    },
+    {
+        name: "Microstegium vimineum",
+        common_name: "Japanese Stiltgrass",
+        type: "Grass",
+        description: "Annual grass that forms dense mats"
+    },
+    // Aquatic Plants
+    {
+        name: "Hydrilla verticillata",
+        common_name: "Hydrilla",
+        type: "Aquatic",
+        description: "Submerged plant that clogs waterways"
+    },
+    {
+        name: "Trapa natans",
+        common_name: "Water Chestnut",
+        type: "Aquatic",
+        description: "Floating plant that forms dense mats"
+    },
+    {
+        name: "Myriophyllum spicatum",
+        common_name: "Eurasian Watermilfoil",
+        type: "Aquatic",
+        description: "Submerged plant that dominates water bodies"
+    },
+    {
+        name: "Egeria densa",
+        common_name: "Brazilian Waterweed",
+        type: "Aquatic",
+        description: "Aquatic plant that forms dense colonies"
+    }
+];
 
 // Initialize map
 let map = L.map('map', {
@@ -57,32 +268,127 @@ function createCustomClusterIcon(cluster) {
     });
 }
 
-// Update only the cluster group initialization
+// Add new data management system
+class DataManager {
+    constructor() {
+        this.cache = new Map();
+        this.detailCache = new Map();
+        this.isLoading = false;
+    }
+
+    async getDataForBounds(bounds, zoom) {
+        const cacheKey = this.getBoundsCacheKey(bounds);
+        if (this.cache.has(cacheKey)) {
+            return this.cache.get(cacheKey);
+        }
+
+        // Load basic data for overview
+        if (zoom < 13) {
+            return this.getClusteredData(bounds);
+        }
+
+        // Load detailed data for zoomed in view
+        return this.getDetailedData(bounds);
+    }
+
+    getBoundsCacheKey(bounds) {
+        return `${bounds.getNorth()},${bounds.getSouth()},${bounds.getEast()},${bounds.getWest()}`;
+    }
+
+    async getClusteredData(bounds) {
+        // Load simplified data for clustering
+        const data = await loadYearlyData([2024]);
+        const filtered = data.filter(obs => this.isInBounds(obs, bounds));
+        this.cache.set(this.getBoundsCacheKey(bounds), filtered);
+        return filtered;
+    }
+
+    async getDetailedData(bounds) {
+        // Load full detail data for zoomed in view
+        const data = await loadYearlyData(YEARS_AVAILABLE);
+        const filtered = data.filter(obs => this.isInBounds(obs, bounds));
+        this.detailCache.set(this.getBoundsCacheKey(bounds), filtered);
+        return filtered;
+    }
+
+    async isInBounds(observation, bounds) {
+        if (!observation.location) return false;
+        const [lat, lng] = observation.location.split(',').map(Number);
+        if (isNaN(lat) || isNaN(lng)) return false;
+        return bounds.contains([lat, lng]);
+    }
+}
+
+// Initialize DataManager
+const dataManager = new DataManager();
+
+// Modify map initialization
+function initializeMap() {
+    // ...existing map initialization code...
+
+    // Add zoom end handler for progressive loading
+    map.on('zoomend moveend', async () => {
+        if (dataManager.isLoading) return;
+        dataManager.isLoading = true;
+        
+        const bounds = map.getBounds();
+        const zoom = map.getZoom();
+        
+        try {
+            const data = await dataManager.getDataForBounds(bounds, zoom);
+            updateMap(data);
+            if (zoom >= 13) {
+                updateBiodiversityStats(data);
+            }
+        } finally {
+            dataManager.isLoading = false;
+        }
+    });
+}
+
+// Modify marker cluster options for better performance
 let markers = L.markerClusterGroup({
     chunkedLoading: true,
-    maxClusterRadius: 60,
+    maxClusterRadius: (zoom) => {
+        // Adjust cluster radius based on zoom level
+        return zoom <= 11 ? 80 : 
+               zoom <= 13 ? 60 : 
+               zoom <= 15 ? 40 : 20;
+    },
     iconCreateFunction: createCustomClusterIcon,
     spiderfyOnMaxZoom: true,
     showCoverageOnHover: false,
     zoomToBoundsOnClick: true,
-    disableClusteringAtZoom: 19
+    disableClusteringAtZoom: 19,
+    animate: false, // Disable animations for better performance
+    maxZoom: 19
 }).addTo(map);
 
 // Store chart instances
 let speciesAccumulationChartInstance = null;
 
 // Core data loading functions
+// Modify the loadYearlyData function to cache results
+let yearlyDataCache = {};
+
 async function loadYearlyData(years = [2023], page = 1, perPage = 100) {
     if (!Array.isArray(years)) years = [years];
     
     const allData = [];
     for (const year of years) {
+        // Check cache first
+        if (yearlyDataCache[year]) {
+            allData.push(...yearlyDataCache[year]);
+            continue;
+        }
+
         try {
             const response = await fetch(
                 `https://jandreanalytics.github.io/FFX-County-Urban-Wildlife-Dashboard-/data/observations_${year}.json`
             );
             if (response.ok) {
                 const data = await response.json();
+                yearlyDataCache[year] = data.observations; // Cache the data
                 allData.push(...data.observations);
             }
         } catch (error) {
@@ -91,26 +397,60 @@ async function loadYearlyData(years = [2023], page = 1, perPage = 100) {
     }
     return allData;
 }
+
+// Update loadYearlyData to use cache more effectively
+async function loadYearlyData(years = [2023], page = 1, perPage = 100) {
+    // ...existing cache check code...
+    
+    const promises = years.map(year => {
+        if (yearlyDataCache[year]) {
+            return Promise.resolve(yearlyDataCache[year]);
+        }
+        return fetch(`https://jandreanalytics.github.io/FFX-County-Urban-Wildlife-Dashboard-/data/observations_${year}.json`)
+            .then(response => response.json())
+            .then(data => {
+                yearlyDataCache[year] = data.observations;
+                return data.observations;
+            })
+            .catch(error => {
+                console.warn(`Failed to load data for ${year}:`, error);
+                return [];
+            });
+    });
+
+    const results = await Promise.all(promises);
+    const allData = results.flat();
+    
+    // Filter out observations outside FFX boundary
+    return allData.filter(obs => {
+        if (!obs.location) return false;
+        const [lat, lng] = obs.location.split(',').map(Number);
+        return !isNaN(lat) && !isNaN(lng);
+    });
+}
+
 // Map update function
 function updateMap(observations) {
     markers.clearLayers();
     
-    const markersToAdd = observations.map(obs => {
-        if (!obs.location) return null;
-        
-        const [lat, lng] = obs.location.split(',').map(Number);
-        if (isNaN(lat) || isNaN(lng)) return null;
-        
-        const taxonomicGroup = (obs.taxonomic_group || 'unknown').toLowerCase();
-        const emoji = getEmoji(taxonomicGroup);
-        
-        return L.marker([lat, lng], {
-            icon: L.divIcon({
-                className: `marker-${taxonomicGroup} emoji-marker`,
-                html: `<div class="emoji-container">${emoji}</div>`
-            })
-        }).bindPopup(createPopupContent(obs));
-    }).filter(Boolean);
+    const markersToAdd = observations
+        .filter(obs => {
+            if (!obs.location) return false;
+            const [lat, lng] = obs.location.split(',').map(Number);
+            return !isNaN(lat) && !isNaN(lng);
+        })
+        .map(obs => {
+            const [lat, lng] = obs.location.split(',').map(Number);
+            const taxonomicGroup = (obs.taxonomic_group || 'unknown').toLowerCase();
+            const emoji = getEmoji(taxonomicGroup);
+            
+            return L.marker([lat, lng], {
+                icon: L.divIcon({
+                    className: `marker-${taxonomicGroup} emoji-marker`,
+                    html: `<div class="emoji-container">${emoji}</div>`
+                })
+            }).bindPopup(createPopupContent(obs));
+        });
 
     markers.addLayers(markersToAdd);
 }
@@ -120,6 +460,9 @@ async function initializeDashboard() {
     try {
         showLoadingState();
         initializeSeasonButtons();
+        
+        // Remove any existing legends first
+        document.querySelectorAll('.info.legend').forEach(legend => legend.remove());
         
         const initialData = await loadYearlyData([2024], 1, 100);
         if (initialData.length === 0) {
@@ -131,22 +474,22 @@ async function initializeDashboard() {
         updateBiodiversityStats(initialData);
         displayLatestDiscoveries(initialData);
         
-        // Add this zoom fitting code after markers are added
+        // Add map legend only once
+        addMapLegend();
+        
+        // Fit bounds
         const markerBounds = markers.getBounds();
         if (markerBounds.isValid()) {
             map.fitBounds(markerBounds, {
-                padding: [50, 50],  // Add padding around the bounds
-                maxZoom: 11        // Limit how far it can zoom in
+                padding: [50, 50],
+                maxZoom: 11
             });
         } else {
-            // Fallback to Fairfax County bounds if no markers
             map.fitBounds([
-                [38.5950, -77.5111],  // SW corner
-                [39.0024, -77.1198]   // NE corner
+                [38.5950, -77.5111],
+                [39.0024, -77.1198]
             ]);
         }
-        
-        addMapLegend();
     } catch (error) {
         console.error('Error initializing dashboard:', error);
     }
@@ -194,6 +537,7 @@ async function fetchRecentObservations() {
     }
 }
 
+// Modify displayLatestDiscoveries function to fix grid spacing
 function displayLatestDiscoveries(observations, filters = {}) {
     const recentDiv = document.getElementById('recentObservations');
     if (!recentDiv) return;
@@ -230,8 +574,13 @@ function displayLatestDiscoveries(observations, filters = {}) {
         return grouped;
     }, {});
 
+    // Sort by count in descending order, then by most recent observation
     const sortedGroups = Object.entries(groupedObservations)
-        .sort((a, b) => b[1].count - a[1].count);
+        .sort((a, b) => {
+            const countDiff = b[1].count - a[1].count;
+            if (countDiff !== 0) return countDiff;
+            return new Date(b[1].latestObservation.observed_on) - new Date(a[1].latestObservation.observed_on);
+        });
 
     recentDiv.innerHTML = `
         <div class="recent-header">
@@ -260,7 +609,11 @@ function displayLatestDiscoveries(observations, filters = {}) {
         </div>
     `;
 
-    recentDiv.style.height = 'auto';  // Remove any fixed heights
+    // Remove the inline style that was causing issues
+    const recentGrid = recentDiv.querySelector('.recent-grid');
+    if (recentGrid) {
+        recentGrid.style.removeProperty('grid-template-rows');
+    }
 
     // Add click handlers for species cards
     recentDiv.querySelectorAll('.recent-card').forEach(card => {
@@ -304,6 +657,14 @@ async function updateBiodiversityStats(observations, singleSpecies = false) {
     const statsDiv = document.getElementById('biodiversityStats');
     if (!statsDiv) return;
 
+    // Show loading state first
+    statsDiv.innerHTML = `
+        <div class="stats-loading">
+            <div class="loading-spinner"></div>
+            <p>Analyzing wildlife data...</p>
+        </div>
+    `;
+
     // Clear existing charts
     const existingCharts = statsDiv.querySelectorAll('canvas');
     existingCharts.forEach(canvas => {
@@ -311,9 +672,23 @@ async function updateBiodiversityStats(observations, singleSpecies = false) {
         if (chartInstance) chartInstance.destroy();
     });
 
+    // Simulate a small delay to show loading state
+    await new Promise(resolve => setTimeout(resolve, 500));
+
     if (singleSpecies && observations.length > 0) {
         const speciesName = observations[0].common_name || observations[0].species_name;
         
+        // Load all years data for this species
+        const allYearsData = await loadYearlyData(YEARS_AVAILABLE);
+        const speciesYearlyData = YEARS_AVAILABLE.reduce((acc, year) => {
+            acc[year] = allYearsData.filter(obs => {
+                const obsName = obs.common_name || obs.species_name;
+                return obsName === speciesName &&
+                       new Date(obs.observed_on).getFullYear() === year;
+            }).length;
+            return acc;
+        }, {});
+
         // Calculate correct monthly data
         const monthlyData = observations.reduce((acc, obs) => {
             const month = new Date(obs.observed_on).getMonth();
@@ -419,7 +794,7 @@ async function updateBiodiversityStats(observations, singleSpecies = false) {
                 labels: years,
                 datasets: [{
                     label: 'Sightings',
-                    data: years.map(year => yearlyData[year] || 0),
+                    data: years.map(year => speciesYearlyData[year] || 0),
                     borderColor: '#4CAF50',
                     backgroundColor: 'rgba(76, 175, 80, 0.1)',
                     tension: 0.3,
@@ -484,11 +859,53 @@ async function updateBiodiversityStats(observations, singleSpecies = false) {
         }, {});
 
         // Add yearly comparisons
+        const currentFilters = {
+            taxonomicGroup: document.getElementById('taxonomicFilter').value,
+            invasive: document.getElementById('invasiveFilter').classList.contains('active'),
+            pollinator: document.getElementById('pollinatorFilter').classList.contains('active'),
+            protected: document.getElementById('protectedFilter').classList.contains('active')
+        };
+
+        // Load and filter all years data according to current filters
         const allYearsData = await loadYearlyData(YEARS_AVAILABLE);
         const yearlyData = YEARS_AVAILABLE.reduce((acc, year) => {
-            acc[year] = allYearsData.filter(obs => 
+            let yearData = allYearsData.filter(obs => 
                 new Date(obs.observed_on).getFullYear() === year
-            ).length;
+            );
+
+            // Apply current filters to historical data
+            if (currentFilters.taxonomicGroup !== 'all') {
+                yearData = yearData.filter(obs => obs.taxonomic_group === currentFilters.taxonomicGroup);
+            }
+            if (currentFilters.invasive) {
+                yearData = yearData.filter(obs => 
+                    INVASIVE_SPECIES.some(invasive => 
+                        (obs.scientific_name && obs.scientific_name.toLowerCase() === invasive.name.toLowerCase()) ||
+                        (obs.common_name && obs.common_name.toLowerCase() === invasive.common_name.toLowerCase())
+                    )
+                );
+            }
+            if (currentFilters.pollinator) {
+                yearData = yearData.filter(obs => 
+                    POLLINATOR_SPECIES.includes(obs.common_name)
+                );
+            }
+            if (currentFilters.protected) {
+                yearData = yearData.filter(obs => {
+                    const allProtectedSpecies = Object.values(PROTECTED_SPECIES)
+                        .flat()
+                        .map(species => ({
+                            commonName: species.name.toLowerCase(),
+                            scientificName: species.scientific.toLowerCase()
+                        }));
+                    return allProtectedSpecies.some(protected => 
+                        (obs.common_name || '').toLowerCase() === protected.commonName ||
+                        (obs.scientific_name || '').toLowerCase() === protected.scientificName
+                    );
+                });
+            }
+
+            acc[year] = yearData.length;
             return acc;
         }, {});
 
@@ -528,30 +945,6 @@ async function updateBiodiversityStats(observations, singleSpecies = false) {
                     <h3>Yearly Comparisons</h3>
                     <div class="chart-container">
                         <canvas id="yearlyChart"></canvas>
-                    </div>
-                </div>
-
-                <div class="stat-section">
-                    <h3>Environmental Indicators</h3>
-                    <div class="environmental-indicators">
-                        <h4>Invasive Species</h4>
-                        <ul>
-                            ${ENVIRONMENTAL_INDICATORS.invasiveSpecies.map(species => `
-                                <li>${species.name} - Prevalence: ${species.prevalence}</li>
-                            `).join('')}
-                        </ul>
-                        <h4>Native Species</h4>
-                        <ul>
-                            ${ENVIRONMENTAL_INDICATORS.nativeSpecies.map(species => `
-                                <li>${species.name} - Prevalence: ${species.prevalence}</li>
-                            `).join('')}
-                        </ul>
-                        <h4>Pollinator Species</h4>
-                        <ul>
-                            ${ENVIRONMENTAL_INDICATORS.pollinatorSpecies.map(species => `
-                                <li>${species.name} - Prevalence: ${species.prevalence}</li>
-                            `).join('')}
-                        </ul>
                     </div>
                 </div>
             </div>
@@ -730,9 +1123,9 @@ async function updateBiodiversityStats(observations, singleSpecies = false) {
         new Chart(document.getElementById('yearlyChart'), {
             type: 'line',
             data: {
-                labels: YEARS_AVAILABLE,
+                labels: YEARS_AVAILABLE.sort(),
                 datasets: [{
-                    label: 'Sightings',
+                    label: 'Total Sightings',
                     data: Object.values(yearlyData),
                     borderColor: '#4CAF50',
                     backgroundColor: 'rgba(76, 175, 80, 0.1)',
@@ -887,9 +1280,6 @@ document.addEventListener('DOMContentLoaded', () => {
             resetMapFilter();
         }
     });
-    
-    // Load invasive species data when the page loads
-    loadInvasiveSpecies();
     
     // Add event listener for invasive species filter
     document.getElementById('invasiveFilter')?.addEventListener('click', function() {
@@ -1108,6 +1498,9 @@ function resetMapFilter() {
 
 // Add this new function
 function addMapLegend() {
+    // Remove any existing legends first
+    document.querySelectorAll('.info.legend').forEach(legend => legend.remove());
+    
     const legend = L.control({ position: 'bottomright' });
     legend.onAdd = function() {
         const div = L.DomUtil.create('div', 'info legend');
@@ -1268,27 +1661,13 @@ function filterPollinatorSpecies() {
     });
 }
 
-
-// Load invasive species data
-async function loadInvasiveSpecies() {
-    try {
-        const response = await fetch('invasive.json');
-        const data = await response.json();
-        invasiveSpeciesList = data.invasive_species;
-        console.log('Loaded invasive species:', invasiveSpeciesList);
-    } catch (error) {
-        console.error('Error loading invasive species list:', error);
-    }
-}
-
 // Modify the existing filterInvasiveSpecies function
 function filterInvasiveSpecies() {
     const year = document.getElementById('yearFilter').value;
     
     loadYearlyData([year]).then(data => {
         const filteredData = data.filter(obs => {
-            // Check both scientific name and common name
-            return invasiveSpeciesList.some(invasive => 
+            return INVASIVE_SPECIES.some(invasive => 
                 (obs.scientific_name && obs.scientific_name.toLowerCase() === invasive.name.toLowerCase()) ||
                 (obs.common_name && obs.common_name.toLowerCase() === invasive.common_name.toLowerCase())
             );
@@ -1297,56 +1676,17 @@ function filterInvasiveSpecies() {
         updateMap(filteredData);
         updateBiodiversityStats(filteredData);
         displayLatestDiscoveries(filteredData, { filter: 'invasive' });
-        
-        // Add invasive species info to stats
         addInvasiveSpeciesInfo(filteredData);
     });
 }
 
-// Add new function to display invasive species information
-function addInvasiveSpeciesInfo(filteredData) {
-    const statsDiv = document.getElementById('biodiversityStats');
-    if (!statsDiv) return;
-    
-    const invasiveCount = filteredData.length;
-    const speciesCounts = filteredData.reduce((acc, obs) => {
-        const name = obs.common_name || obs.scientific_name;
-        acc[name] = (acc[name] || 0) + 1;
-        return acc;
-    }, {});
-    
-    const invasiveInfo = document.createElement('div');
-    invasiveInfo.className = 'invasive-species-info';
-    invasiveInfo.innerHTML = `
-        <h3>Invasive Species Report</h3>
-        <p>Total invasive sightings: ${invasiveCount}</p>
-        <div class="invasive-species-list">
-            ${Object.entries(speciesCounts)
-                .sort(([,a], [,b]) => b - a)
-                .map(([species, count]) => {
-                    const invasiveDetails = invasiveSpeciesList.find(inv => 
-                        inv.common_name === species || inv.name === species
-                    );
-                    return `
-                        <div class="invasive-species-item">
-                            <h4>${species}</h4>
-                            <p>Sightings: ${count}</p>
-                            ${invasiveDetails ? `
-                                <p class="invasive-description">${invasiveDetails.description}</p>
-                                <p class="invasive-type">Type: ${invasiveDetails.type}</p>
-                            ` : ''}
-                        </div>
-                    `;
-                }).join('')}
-        </div>
-    `;
-    
-    // Insert the invasive info at the top of the stats
-    statsDiv.insertBefore(invasiveInfo, statsDiv.firstChild);
-}
-
-// Modify the document.addEventListener('DOMContentLoaded') section
+// Modify DOMContentLoaded event listener
 document.addEventListener('DOMContentLoaded', () => {
+    // Remove loadInvasiveSpecies() call
+    populateYearFilter();
+    initializeDashboard();
+    populateSpeciesSearch();
+    
     // ...existing initialization code...
     
     // Load invasive species data when the page loads
@@ -1506,3 +1846,4 @@ if (singleSpecies && observations.length > 0) {
 }
 
 // ...rest of existing code...
+

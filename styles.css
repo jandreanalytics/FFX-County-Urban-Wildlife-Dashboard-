@@ -130,7 +130,8 @@ header {
 }
 
 main {
-    width: 80%;
+    width: 95%; /* Increase from 80% */
+    max-width: 1800px; /* Add maximum width */
     margin: 0 auto; /* Remove top margin */
     padding: 1.5rem 0;
     overflow: hidden; /* Add this to contain the grid */
@@ -214,7 +215,7 @@ main {
 
 .dashboard-grid {
     display: grid;
-    grid-template-columns: 3fr 1fr;
+    grid-template-columns: 3.5fr 1.5fr; /* Give more space to main content */
     grid-template-rows: 500px 1fr; /* Map fixed, content flexible */
     gap: 1rem;
     width: 100%;
@@ -253,11 +254,10 @@ main {
 .recent-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 0.5rem;
+    gap: 1rem;
     padding: 0;
-    margin: 0 0 1rem 0;
-    height: 100%; /* Fill container */
-    overflow-y: auto;
+    margin: 0;
+    grid-auto-rows: min-content; /* This ensures cards don't overlap */
 }
 
 .recent-card {
@@ -269,6 +269,10 @@ main {
     cursor: pointer;
     position: relative;
     aspect-ratio: 1;
+    height: auto; /* Remove fixed height */
+    min-height: 150px; /* Add minimum height */
+    display: flex;
+    flex-direction: column;
 }
 
 .recent-card:hover {
@@ -498,6 +502,7 @@ select:hover, input[type="text"]:hover {
     background: white;
     border-radius: 12px;
     padding: 1rem;
+    min-width: 350px; /* Ensure minimum width for statistics */
 }
 
 /* Stats section - full height */
@@ -1129,6 +1134,7 @@ html {
     background: white;
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    min-height: 300px; /* Ensure charts have enough height */
 }
 
 .stat-section {
@@ -1609,3 +1615,29 @@ function displayLatestDiscoveries(observations, filters = {}) {
 }
 
 /* ...rest of existing code... */
+
+/* Stats loading state */
+.stats-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    text-align: center;
+    color: #666;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #4CAF50;
+    border-radius: 50%;
+    margin-bottom: 1rem;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
