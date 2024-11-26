@@ -73,23 +73,31 @@
                 </div>
             </div>
 
-            <!-- Add search filter group -->
+            <!-- Modify filter controls section -->
             <div class="filter-group">
                 <label for="speciesSearch">Which species?</label>
-                <input type="text" id="speciesSearch" list="speciesOptions" placeholder="e.g. Cardinal, American Robin">
-                <datalist id="speciesOptions"></datalist>
-            </div>
-
-            <!-- Add to filter controls section in index.html -->
-            <div class="filter-group">
-                <div class="action-buttons">
-                    <button id="resetFilters" class="filter-button">
+                <div class="search-wrapper">
+                    <input type="text" id="speciesSearch" list="speciesOptions" placeholder="e.g. Cardinal, American Robin">
+                    <datalist id="speciesOptions"></datalist>
+                    <button id="resetFilters" class="filter-button reset-button">
                         🔄 Reset All Filters
                     </button>
-                    <button id="invasiveFilter" class="filter-button warning">
-                        ⚠️ Invasive Species
-                    </button>
                 </div>
+            </div>
+
+            <div class="quick-filters">
+                <button id="invasiveFilter" class="filter-button warning">
+                    ⚠️ Invasive Species
+                </button>
+                <button id="pollinatorFilter" class="filter-button pollinator">
+                    🐝 Pollinators
+                </button>
+                <button id="rareFilter" class="filter-button rare">
+                    ⭐ Rare Sightings
+                </button>
+                <button id="protectedFilter" class="filter-button protected">
+                    🛡️ Protected Species
+                </button>
             </div>
         </div>
 

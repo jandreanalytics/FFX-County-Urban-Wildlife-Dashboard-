@@ -148,18 +148,70 @@ main {
 }
 
 .dashboard-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center; /* Center everything in the filter box */
     background: white;
     border-radius: 20px;
     padding: 1.2rem;
-    gap: 1.5rem;
     margin: 1rem 0;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
 }
 
-/* Dashboard grid */
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-width: 150px; /* Ensure a minimum width for each filter group */
+}
+
+.search-wrapper {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex: 1;
+}
+
+.search-wrapper input[type="text"] {
+    flex: 1;
+    max-width: 200px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.reset-button, .invasive-species-button {
+    padding: 0.75rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.reset-button:hover, .invasive-species-button:hover {
+    background: #4CAF50;
+    color: white;
+}
+
+.invasive-species-button {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    width: 100%; /* Make the button take full width */
+}
+
+.invasive-species-button:hover {
+    background: #f5c6cb;
+    color: #721c24;
+}
+
 .dashboard-grid {
     display: grid;
     grid-template-columns: 3fr 1fr;
@@ -1327,3 +1379,233 @@ function displayLatestDiscoveries(observations, filters = {}) {
     background: #856404;
     color: white;
 }
+
+.quick-filters {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.5rem;
+}
+
+.filter-button {
+    padding: 0.75rem 1rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.filter-button.warning {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.filter-button.pollinator {
+    background: #fff4e5;
+    color: #954d00;
+}
+
+.filter-button.rare {
+    background: #e8f4fd;
+    color: #004085;
+}
+
+.filter-button.protected {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.filter-button:hover {
+    filter: brightness(95%);
+    transform: translateY(-1px);
+}
+
+.filter-button.active {
+    filter: brightness(90%);
+    transform: translateY(1px);
+}
+
+/* Update season buttons to match quick filter style */
+.season-buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.season-buttons button {
+    padding: 0.8rem 1rem;
+    border: none;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+/* Season-specific styles */
+.season-button-all {
+    background: #f8f9fa;
+    color: #666;
+}
+
+.season-button-spring {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.season-button-summer {
+    background: #fff3e0;
+    color: #ef6c00;
+}
+
+.season-button-fall {
+    background: #fff3e0;
+    color: #d84315;
+}
+
+.season-button-winter {
+    background: #e3f2fd;
+    color: #1565c0;
+}
+
+.season-buttons button:hover {
+    filter: brightness(95%);
+    transform: translateY(-1px);
+}
+
+.season-buttons button.active {
+    filter: brightness(90%);
+    transform: translateY(1px);
+}
+
+/* Single species stats styling */
+.single-species-stats {
+    padding: 1.5rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.species-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.species-header h2 {
+    color: #333;
+    margin: 0 0 0.5rem 0;
+    font-size: 1.5rem;
+}
+
+.total-sightings {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 12px;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.sighting-number {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #4CAF50;
+    margin: 0.5rem 0;
+}
+
+.chart-section {
+    margin-bottom: 2rem;
+}
+
+.chart-section h3 {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 1rem;
+}
+
+.recent-timeline {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 1rem;
+}
+
+.timeline-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem;
+    border-bottom: 1px solid #eee;
+}
+
+.timeline-item:last-child {
+    border-bottom: none;
+}
+
+.timeline-date {
+    color: #4CAF50;
+    font-weight: 500;
+}
+
+.timeline-location {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+/* ...existing code... */
+
+.recent-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 0.5rem;
+}
+
+.timeline-item {
+    background: white;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    transition: all 0.2s ease;
+}
+
+.timeline-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.timeline-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.timeline-date {
+    font-weight: 600;
+    color: #4CAF50;
+    font-size: 0.9rem;
+}
+
+.timeline-photo {
+    color: #666;
+    font-size: 1.1rem;
+}
+
+.timeline-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.timeline-location {
+    color: #333;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.timeline-notes {
+    color: #666;
+    font-size: 0.85rem;
+    font-style: italic;
+}
+
+/* ...rest of existing code... */

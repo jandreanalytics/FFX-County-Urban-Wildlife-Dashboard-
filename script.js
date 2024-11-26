@@ -300,7 +300,7 @@ const ENVIRONMENTAL_INDICATORS = {
 };
 
 // Update the updateBiodiversityStats function to include yearly comparisons and environmental indicators
-async function updateBiodiversityStats(observations) {
+async function updateBiodiversityStats(observations, singleSpecies = false) {
     const statsDiv = document.getElementById('biodiversityStats');
     if (!statsDiv) return;
 
@@ -311,323 +311,456 @@ async function updateBiodiversityStats(observations) {
         if (chartInstance) chartInstance.destroy();
     });
 
-    // Prepare species data with abbreviated names
-    function abbreviateSpeciesName(name) {
-        return name
-            .replace('Common ', 'C. ')
-            .replace('Eastern ', 'E. ')
-            .replace('Northern ', 'N. ')
-            .replace('American ', 'Am. ')
-            .replace('Southern ', 'S. ')
-            .replace('Western ', 'W. ')
-            .replace('Greater ', 'G. ')
-            .replace('Lesser ', 'L. ');
+    if (singleSpecies && observations.length > 0) {
+        const speciesName = observations[0].common_name || observations[0].species_name;
+        
+        // Calculate correct monthly data
+        const monthlyData = observations.reduce((acc, obs) => {
+            const month = new Date(obs.observed_on).getMonth();
+            const monthName = new Date(0, month).toLocaleString('default', { month: 'short' });
+            acc[monthName] = (acc[monthName] || 0) + 1;
+            return acc;
+        }, {});
+
+        // Calculate yearly data for this species
+        const yearlyData = observations.reduce((acc, obs) => {
+            const year = new Date(obs.observed_on).getFullYear();
+            acc[year] = (acc[year] || 0) + 1;
+            return acc;
+        }, {});
+
+        statsDiv.innerHTML = `
+            <div class="single-species-stats">
+                <div class="species-header">
+                    <h2>${speciesName}</h2>
+                </div>
+                
+                <div class="total-sightings">
+                    <p>Total Observations</p>
+                    <div class="sighting-number">${observations.length}</div>
+                    <p>in Fairfax County</p>
+                </div>
+
+                <div class="chart-section">
+                    <h3>Monthly Activity Pattern</h3>
+                    <div class="chart-container">
+                        <canvas id="monthlyChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-section">
+                    <h3>Annual Observations</h3>
+                    <div class="chart-container">
+                        <canvas id="yearlyChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-section">
+                    <h3>Recent Activity</h3>
+                    <div class="recent-timeline">
+                        ${observations
+                            .sort((a, b) => new Date(b.observed_on) - new Date(a.observed_on))
+                            .slice(0, 5)
+                            .map(obs => `
+                                <div class="timeline-item">
+                                    <div class="timeline-header">
+                                        <span class="timeline-date">${new Date(obs.observed_on).toLocaleDateString()}</span>
+                                        ${obs.photo_url ? 
+                                            `<span class="timeline-photo" title="Has photo">📸</span>` : 
+                                            ''
+                                        }
+                                    </div>
+                                    <div class="timeline-content">
+                                        <span class="timeline-location">${formatLocation(obs.place_guess)}</span>
+                                        ${obs.notes ? 
+                                            `<span class="timeline-notes">${obs.notes}</span>` : 
+                                            ''
+                                        }
+                                    </div>
+                                </div>
+                            `).join('')}
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Create Monthly Activity Chart
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const monthlyValues = months.map(month => monthlyData[month] || 0);
+
+        new Chart(document.getElementById('monthlyChart'), {
+            type: 'bar',
+            data: {
+                labels: months,
+                datasets: [{
+                    label: 'Sightings',
+                    data: monthlyValues,
+                    backgroundColor: '#4CAF50',
+                    borderRadius: 5
+                }]
+            },
+            options: {
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Number of Sightings' }
+                    }
+                },
+                maintainAspectRatio: false
+            }
+        });
+
+        // Create Yearly Trend Chart
+        const years = YEARS_AVAILABLE.sort();
+        new Chart(document.getElementById('yearlyChart'), {
+            type: 'line',
+            data: {
+                labels: years,
+                datasets: [{
+                    label: 'Sightings',
+                    data: years.map(year => yearlyData[year] || 0),
+                    borderColor: '#4CAF50',
+                    backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                    tension: 0.3,
+                    fill: true
+                }]
+            },
+            options: {
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Number of Sightings' }
+                    }
+                },
+                maintainAspectRatio: false
+            }
+        });
+
+    } else {
+        // Use existing stats display for multiple species
+        // Prepare species data with abbreviated names
+        function abbreviateSpeciesName(name) {
+            return name
+                .replace('Common ', 'C. ')
+                .replace('Eastern ', 'E. ')
+                .replace('Northern ', 'N. ')
+                .replace('American ', 'Am. ')
+                .replace('Southern ', 'S. ')
+                .replace('Western ', 'W. ')
+                .replace('Greater ', 'G. ')
+                .replace('Lesser ', 'L. ');
+        }
+
+        const speciesData = observations.reduce((acc, obs) => {
+            const species = obs.common_name || obs.species_name || 'Unknown Species';
+            acc[species] = (acc[species] || 0) + 1;
+            return acc;
+        }, {});
+
+        // Seasonal patterns using observation dates
+        const seasonalData = observations.reduce((acc, obs) => {
+            const month = new Date(obs.observed_on).getMonth();
+            if (SEASONS.spring.includes(month)) acc.spring++;
+            else if (SEASONS.summer.includes(month)) acc.summer++;
+            else if (SEASONS.fall.includes(month)) acc.fall++;
+            else acc.winter++;
+            return acc;
+        }, { spring: 0, summer: 0, fall: 0, winter: 0 });
+
+        // Add taxonomic group analysis
+        const taxonomicData = observations.reduce((acc, obs) => {
+            const group = obs.taxonomic_group || 'Unknown';
+            acc[group] = (acc[group] || 0) + 1;
+            return acc;
+        }, {});
+
+        // Add monthly trends
+        const monthlyData = observations.reduce((acc, obs) => {
+            const month = new Date(obs.observed_on).toLocaleString('default', { month: 'short' });
+            acc[month] = (acc[month] || 0) + 1;
+            return acc;
+        }, {});
+
+        // Add yearly comparisons
+        const allYearsData = await loadYearlyData(YEARS_AVAILABLE);
+        const yearlyData = YEARS_AVAILABLE.reduce((acc, year) => {
+            acc[year] = allYearsData.filter(obs => 
+                new Date(obs.observed_on).getFullYear() === year
+            ).length;
+            return acc;
+        }, {});
+
+        statsDiv.innerHTML = `
+            <div class="wildlife-statistics">
+                <h2>Wildlife Statistics</h2>
+                
+                <div class="stat-section">
+                    <h3>Most Reported Species</h3>
+                    <div class="chart-container">
+                        <canvas id="speciesChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="stat-section">
+                    <h3>Seasonal Distribution</h3>
+                    <div class="chart-container">
+                        <canvas id="seasonalChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="stat-section">
+                    <h3>Species Groups Distribution</h3>
+                    <div class="chart-container">
+                        <canvas id="taxonomicChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="stat-section">
+                    <h3>Monthly Trends</h3>
+                    <div class="chart-container">
+                        <canvas id="monthlyChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="stat-section">
+                    <h3>Yearly Comparisons</h3>
+                    <div class="chart-container">
+                        <canvas id="yearlyChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="stat-section">
+                    <h3>Environmental Indicators</h3>
+                    <div class="environmental-indicators">
+                        <h4>Invasive Species</h4>
+                        <ul>
+                            ${ENVIRONMENTAL_INDICATORS.invasiveSpecies.map(species => `
+                                <li>${species.name} - Prevalence: ${species.prevalence}</li>
+                            `).join('')}
+                        </ul>
+                        <h4>Native Species</h4>
+                        <ul>
+                            ${ENVIRONMENTAL_INDICATORS.nativeSpecies.map(species => `
+                                <li>${species.name} - Prevalence: ${species.prevalence}</li>
+                            `).join('')}
+                        </ul>
+                        <h4>Pollinator Species</h4>
+                        <ul>
+                            ${ENVIRONMENTAL_INDICATORS.pollinatorSpecies.map(species => `
+                                <li>${species.name} - Prevalence: ${species.prevalence}</li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Create Species Chart with abbreviated names
+        const topSpecies = Object.entries(speciesData)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 8)
+            .map(([species, count]) => [abbreviateSpeciesName(species), count]);
+
+        new Chart(document.getElementById('speciesChart'), {
+            type: 'bar',
+            data: {
+                labels: topSpecies.map(([species]) => species),
+                datasets: [{
+                    label: 'Number of Sightings',
+                    data: topSpecies.map(([, count]) => count),
+                    backgroundColor: '#4CAF50',
+                    borderRadius: 5
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.raw} sightings`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        title: {
+                            display: true,
+                            text: 'Number of Sightings'
+                        }
+                    },
+                    y: {
+                        grid: { display: false }
+                    }
+                },
+                maintainAspectRatio: false
+            }
+        });
+
+        // Create Seasonal Chart
+        new Chart(document.getElementById('seasonalChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Spring', 'Summer', 'Fall', 'Winter'],
+                datasets: [{
+                    data: [
+                        seasonalData.spring,
+                        seasonalData.summer,
+                        seasonalData.fall,
+                        seasonalData.winter
+                    ],
+                    backgroundColor: [
+                        '#4CAF50',  // Spring (green)
+                        '#FDD835',  // Summer (yellow)
+                        '#FF7043',  // Fall (orange)
+                        '#42A5F5'   // Winter (blue)
+                    ]
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const percent = ((context.raw / observations.length) * 100).toFixed(1);
+                                return `${context.raw} sightings (${percent}%)`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { display: false },
+                        title: {
+                            display: true,
+                            text: 'Number of Sightings'
+                        }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                },
+                maintainAspectRatio: false
+            }
+        });
+
+        // Add Taxonomic Groups Chart (Pie)
+        new Chart(document.getElementById('taxonomicChart'), {
+            type: 'pie',
+            data: {
+                labels: Object.keys(taxonomicData),
+                datasets: [{
+                    data: Object.values(taxonomicData),
+                    backgroundColor: [
+                        '#FF6B6B', // Birds
+                        '#4ECDC4', // Mammals
+                        '#45B7D1', // Plants
+                        '#96CEB4', // Reptiles
+                        '#88D8B0', // Amphibians
+                        '#FFCC5C', // Insects
+                        '#4A90E2'  // Fish
+                    ]
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: { boxWidth: 12 }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: (context) => {
+                                const percent = ((context.raw / observations.length) * 100).toFixed(1);
+                                return `${context.label}: ${context.raw} (${percent}%)`;
+                            }
+                        }
+                    }
+                },
+                maintainAspectRatio: false
+            }
+        });
+
+        // Add Monthly Trends Chart (Line)
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const monthlyValues = months.map(month => monthlyData[month] || 0);
+
+        new Chart(document.getElementById('monthlyChart'), {
+            type: 'line',
+            data: {
+                labels: months,
+                datasets: [{
+                    label: 'Sightings',
+                    data: monthlyValues,
+                    borderColor: '#4CAF50',
+                    backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                    tension: 0.3,
+                    fill: true
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { display: false },
+                        title: {
+                            display: true,
+                            text: 'Number of Sightings'
+                        }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                },
+                maintainAspectRatio: false
+            }
+        });
+
+        // Add Yearly Comparisons Chart (Line)
+        new Chart(document.getElementById('yearlyChart'), {
+            type: 'line',
+            data: {
+                labels: YEARS_AVAILABLE,
+                datasets: [{
+                    label: 'Sightings',
+                    data: Object.values(yearlyData),
+                    borderColor: '#4CAF50',
+                    backgroundColor: 'rgba(76, 175, 80, 0.1)',
+                    tension: 0.3,
+                    fill: true
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { display: false },
+                        title: {
+                            display: true,
+                            text: 'Number of Sightings'
+                        }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                },
+                maintainAspectRatio: false
+            }
+        });
     }
-
-    const speciesData = observations.reduce((acc, obs) => {
-        const species = obs.common_name || obs.species_name || 'Unknown Species';
-        acc[species] = (acc[species] || 0) + 1;
-        return acc;
-    }, {});
-
-    // Seasonal patterns using observation dates
-    const seasonalData = observations.reduce((acc, obs) => {
-        const month = new Date(obs.observed_on).getMonth();
-        if (SEASONS.spring.includes(month)) acc.spring++;
-        else if (SEASONS.summer.includes(month)) acc.summer++;
-        else if (SEASONS.fall.includes(month)) acc.fall++;
-        else acc.winter++;
-        return acc;
-    }, { spring: 0, summer: 0, fall: 0, winter: 0 });
-
-    // Add taxonomic group analysis
-    const taxonomicData = observations.reduce((acc, obs) => {
-        const group = obs.taxonomic_group || 'Unknown';
-        acc[group] = (acc[group] || 0) + 1;
-        return acc;
-    }, {});
-
-    // Add monthly trends
-    const monthlyData = observations.reduce((acc, obs) => {
-        const month = new Date(obs.observed_on).toLocaleString('default', { month: 'short' });
-        acc[month] = (acc[month] || 0) + 1;
-        return acc;
-    }, {});
-
-    // Add yearly comparisons
-    const yearlyData = YEARS_AVAILABLE.reduce((acc, year) => {
-        acc[year] = observations.filter(obs => new Date(obs.observed_on).getFullYear() === year).length;
-        return acc;
-    }, {});
-
-    statsDiv.innerHTML = `
-        <div class="wildlife-statistics">
-            <h2>Wildlife Statistics</h2>
-            
-            <div class="stat-section">
-                <h3>Most Reported Species</h3>
-                <div class="chart-container">
-                    <canvas id="speciesChart"></canvas>
-                </div>
-            </div>
-
-            <div class="stat-section">
-                <h3>Seasonal Distribution</h3>
-                <div class="chart-container">
-                    <canvas id="seasonalChart"></canvas>
-                </div>
-            </div>
-
-            <div class="stat-section">
-                <h3>Species Groups Distribution</h3>
-                <div class="chart-container">
-                    <canvas id="taxonomicChart"></canvas>
-                </div>
-            </div>
-
-            <div class="stat-section">
-                <h3>Monthly Trends</h3>
-                <div class="chart-container">
-                    <canvas id="monthlyChart"></canvas>
-                </div>
-            </div>
-
-            <div class="stat-section">
-                <h3>Yearly Comparisons</h3>
-                <div class="chart-container">
-                    <canvas id="yearlyChart"></canvas>
-                </div>
-            </div>
-
-            <div class="stat-section">
-                <h3>Environmental Indicators</h3>
-                <div class="environmental-indicators">
-                    <h4>Invasive Species</h4>
-                    <ul>
-                        ${ENVIRONMENTAL_INDICATORS.invasiveSpecies.map(species => `
-                            <li>${species.name} - Prevalence: ${species.prevalence}</li>
-                        `).join('')}
-                    </ul>
-                    <h4>Native Species</h4>
-                    <ul>
-                        ${ENVIRONMENTAL_INDICATORS.nativeSpecies.map(species => `
-                            <li>${species.name} - Prevalence: ${species.prevalence}</li>
-                        `).join('')}
-                    </ul>
-                    <h4>Pollinator Species</h4>
-                    <ul>
-                        ${ENVIRONMENTAL_INDICATORS.pollinatorSpecies.map(species => `
-                            <li>${species.name} - Prevalence: ${species.prevalence}</li>
-                        `).join('')}
-                    </ul>
-                </div>
-            </div>
-        </div>
-    `;
-
-    // Create Species Chart with abbreviated names
-    const topSpecies = Object.entries(speciesData)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 8)
-        .map(([species, count]) => [abbreviateSpeciesName(species), count]);
-
-    new Chart(document.getElementById('speciesChart'), {
-        type: 'bar',
-        data: {
-            labels: topSpecies.map(([species]) => species),
-            datasets: [{
-                label: 'Number of Sightings',
-                data: topSpecies.map(([, count]) => count),
-                backgroundColor: '#4CAF50',
-                borderRadius: 5
-            }]
-        },
-        options: {
-            indexAxis: 'y',
-            plugins: {
-                legend: { display: false },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            return `${context.raw} sightings`;
-                        }
-                    }
-                }
-            },
-            scales: {
-                x: {
-                    grid: { display: false },
-                    title: {
-                        display: true,
-                        text: 'Number of Sightings'
-                    }
-                },
-                y: {
-                    grid: { display: false }
-                }
-            },
-            maintainAspectRatio: false
-        }
-    });
-
-    // Create Seasonal Chart
-    new Chart(document.getElementById('seasonalChart'), {
-        type: 'bar',
-        data: {
-            labels: ['Spring', 'Summer', 'Fall', 'Winter'],
-            datasets: [{
-                data: [
-                    seasonalData.spring,
-                    seasonalData.summer,
-                    seasonalData.fall,
-                    seasonalData.winter
-                ],
-                backgroundColor: [
-                    '#4CAF50',  // Spring (green)
-                    '#FDD835',  // Summer (yellow)
-                    '#FF7043',  // Fall (orange)
-                    '#42A5F5'   // Winter (blue)
-                ]
-            }]
-        },
-        options: {
-            plugins: {
-                legend: { display: false },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            const percent = ((context.raw / observations.length) * 100).toFixed(1);
-                            return `${context.raw} sightings (${percent}%)`;
-                        }
-                    }
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    grid: { display: false },
-                    title: {
-                        display: true,
-                        text: 'Number of Sightings'
-                    }
-                },
-                x: {
-                    grid: { display: false }
-                }
-            },
-            maintainAspectRatio: false
-        }
-    });
-
-    // Add Taxonomic Groups Chart (Pie)
-    new Chart(document.getElementById('taxonomicChart'), {
-        type: 'pie',
-        data: {
-            labels: Object.keys(taxonomicData),
-            datasets: [{
-                data: Object.values(taxonomicData),
-                backgroundColor: [
-                    '#FF6B6B', // Birds
-                    '#4ECDC4', // Mammals
-                    '#45B7D1', // Plants
-                    '#96CEB4', // Reptiles
-                    '#88D8B0', // Amphibians
-                    '#FFCC5C', // Insects
-                    '#4A90E2'  // Fish
-                ]
-            }]
-        },
-        options: {
-            plugins: {
-                legend: {
-                    position: 'right',
-                    labels: { boxWidth: 12 }
-                },
-                tooltip: {
-                    callbacks: {
-                        label: (context) => {
-                            const percent = ((context.raw / observations.length) * 100).toFixed(1);
-                            return `${context.label}: ${context.raw} (${percent}%)`;
-                        }
-                    }
-                }
-            },
-            maintainAspectRatio: false
-        }
-    });
-
-    // Add Monthly Trends Chart (Line)
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    const monthlyValues = months.map(month => monthlyData[month] || 0);
-
-    new Chart(document.getElementById('monthlyChart'), {
-        type: 'line',
-        data: {
-            labels: months,
-            datasets: [{
-                label: 'Sightings',
-                data: monthlyValues,
-                borderColor: '#4CAF50',
-                backgroundColor: 'rgba(76, 175, 80, 0.1)',
-                tension: 0.3,
-                fill: true
-            }]
-        },
-        options: {
-            plugins: {
-                legend: { display: false }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    grid: { display: false },
-                    title: {
-                        display: true,
-                        text: 'Number of Sightings'
-                    }
-                },
-                x: {
-                    grid: { display: false }
-                }
-            },
-            maintainAspectRatio: false
-        }
-    });
-
-    // Add Yearly Comparisons Chart (Line)
-    new Chart(document.getElementById('yearlyChart'), {
-        type: 'line',
-        data: {
-            labels: YEARS_AVAILABLE,
-            datasets: [{
-                label: 'Sightings',
-                data: Object.values(yearlyData),
-                borderColor: '#4CAF50',
-                backgroundColor: 'rgba(76, 175, 80, 0.1)',
-                tension: 0.3,
-                fill: true
-            }]
-        },
-        options: {
-            plugins: {
-                legend: { display: false }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    grid: { display: false },
-                    title: {
-                        display: true,
-                        text: 'Number of Sightings'
-                    }
-                },
-                x: {
-                    grid: { display: false }
-                }
-            },
-            maintainAspectRatio: false
-        }
-    });
 }
 
 // UI Helper functions
@@ -737,6 +870,58 @@ document.addEventListener('DOMContentLoaded', () => {
         // Reset the map and display
         resetMapFilter();
     });
+
+    // Add pollinator filter button listener
+    document.getElementById('pollinatorFilter').addEventListener('click', function() {
+        // Toggle active state
+        this.classList.toggle('active');
+        
+        // Remove other active states from other filter buttons
+        document.querySelectorAll('.filter-button').forEach(btn => {
+            if (btn !== this) btn.classList.remove('active');
+        });
+        
+        if (this.classList.contains('active')) {
+            filterPollinatorSpecies();
+        } else {
+            resetMapFilter();
+        }
+    });
+    
+    // Load invasive species data when the page loads
+    loadInvasiveSpecies();
+    
+    // Add event listener for invasive species filter
+    document.getElementById('invasiveFilter')?.addEventListener('click', function() {
+        this.classList.toggle('active');
+        
+        // Remove other active states from other filter buttons
+        document.querySelectorAll('.filter-button').forEach(btn => {
+            if (btn !== this) btn.classList.remove('active');
+        });
+        
+        if (this.classList.contains('active')) {
+            filterInvasiveSpecies();
+        } else {
+            resetMapFilter();
+        }
+    });
+
+    // Add event listener for protected species filter
+    document.getElementById('protectedFilter')?.addEventListener('click', function() {
+        this.classList.toggle('active');
+        
+        // Remove other active states from other filter buttons
+        document.querySelectorAll('.filter-button').forEach(btn => {
+            if (btn !== this) btn.classList.remove('active');
+        });
+        
+        if (this.classList.contains('active')) {
+            filterProtectedSpecies();
+        } else {
+            resetMapFilter();
+        }
+    });
 });
 
 // Filter handling functions
@@ -749,7 +934,7 @@ function handleFilterChange() {
     loadYearlyData([filter.year]).then(data => {
         const filteredData = filterObservations(data, filter);
         updateMap(filteredData);
-        updateBiodiversityStats(filteredData);
+        updateBiodiversityStats(filteredData);  // Update stats with filtered data
         displayLatestDiscoveries(filteredData, filter);
     });
 }
@@ -767,7 +952,7 @@ function handleSeasonSelect(event) {
     loadYearlyData([year]).then(data => {
         const filteredData = filterObservations(data, filter);
         updateMap(filteredData);
-        updateBiodiversityStats(filteredData);
+        updateBiodiversityStats(filteredData);  // Update stats with filtered data
         displayLatestDiscoveries(filteredData, filter);
     });
 }
@@ -782,17 +967,30 @@ function populateYearFilter() {
     }
 }
 
+// Update the season buttons initialization
 function initializeSeasonButtons() {
+    const seasonButtons = {
+        all: { emoji: '🗓️', label: 'All' },
+        spring: { emoji: '🌱', label: 'Spring' },
+        summer: { emoji: '☀️', label: 'Summer' },
+        fall: { emoji: '🍂', label: 'Fall' },
+        winter: { emoji: '❄️', label: 'Winter' }
+    };
+
+    const buttonsHTML = Object.entries(seasonButtons).map(([season, {emoji, label}]) => `
+        <button data-season="${season}" class="season-button-${season}${season === 'all' ? ' active' : ''}">
+            ${emoji} ${label}
+        </button>
+    `).join('');
+
+    document.querySelector('.season-buttons').innerHTML = buttonsHTML;
+    
+    // Add event listeners
     document.querySelectorAll('.season-buttons button').forEach(button => {
-        button.addEventListener('click', (event) => {
-            const season = event.target.dataset.season;
-            const year = document.getElementById('yearFilter').value;
-            handleSeasonSelect(event);
-        });
+        button.addEventListener('click', handleSeasonSelect);
     });
 }
 
-// Add this at the start of your data loading functions
 function showLoadingState() {
     const recentDiv = document.getElementById('recentObservations');
     if (recentDiv) {
@@ -854,6 +1052,7 @@ function filterMapBySpecies(speciesName) {
         
         if (speciesData.length > 0) {
             updateMap(speciesData);
+            updateBiodiversityStats(speciesData, true);  // Add true for single species mode
             displayLatestDiscoveries(speciesData, { year, species: speciesName });
             
             // Add new clear filter button
@@ -895,6 +1094,7 @@ function resetMapFilter() {
         }
         
         updateMap(filteredData);
+        updateBiodiversityStats(filteredData);  // Add this line to update stats
         displayLatestDiscoveries(filteredData, { year });
         
         // Remove the clear filter button
@@ -997,8 +1197,6 @@ function addSearchHistory() {
     document.querySelector('.filter-group').appendChild(searchContainer);
 }
 
-// Add to script.js
-let invasiveSpeciesList = []; // Will be populated from JSON
 
 async function loadInvasiveSpecies() {
     try {
@@ -1022,6 +1220,289 @@ function filterInvasiveSpecies() {
     const filteredObservations = observations.filter(obs => 
         invasiveSpeciesList.includes(obs.scientific_name)
     );
-    displayLatestDiscoveries(filteredObservations);
     updateMap(filteredObservations);
+    updateBiodiversityStats(filteredObservations);  // Update stats with invasive species data
+    displayLatestDiscoveries(filteredObservations);
 }
+
+// Replace the POLLINATOR_GROUPS constant with a more specific list
+const POLLINATOR_SPECIES = [
+    // Native Bees
+    'Common Eastern Bumblebee',
+    'Eastern Carpenter Bee',
+    'European Honey Bee',
+    'Mining Bee',
+    'Green Metallic Bee',
+    'Mason Bee',
+    'Leafcutter Bee',
+    'Yellow-faced Bee',
+    
+    // Butterflies
+    'Monarch Butterfly',
+    'Eastern Tiger Swallowtail',
+    'Black Swallowtail',
+    'Painted Lady',
+    'Red Admiral',
+    'American Lady',
+    
+    // Moths
+    'Hummingbird Moth',
+    'Clearwing Moth',
+    
+    // Birds
+    'Ruby-throated Hummingbird'
+];
+
+function filterPollinatorSpecies() {
+    const year = document.getElementById('yearFilter').value;
+    
+    loadYearlyData([year]).then(data => {
+        const filteredData = data.filter(obs => 
+            // Only filter by exact species name matches
+            POLLINATOR_SPECIES.includes(obs.common_name)
+        );
+        
+        updateMap(filteredData);
+        updateBiodiversityStats(filteredData);
+        displayLatestDiscoveries(filteredData, { filter: 'pollinators' });
+    });
+}
+
+
+// Load invasive species data
+async function loadInvasiveSpecies() {
+    try {
+        const response = await fetch('invasive.json');
+        const data = await response.json();
+        invasiveSpeciesList = data.invasive_species;
+        console.log('Loaded invasive species:', invasiveSpeciesList);
+    } catch (error) {
+        console.error('Error loading invasive species list:', error);
+    }
+}
+
+// Modify the existing filterInvasiveSpecies function
+function filterInvasiveSpecies() {
+    const year = document.getElementById('yearFilter').value;
+    
+    loadYearlyData([year]).then(data => {
+        const filteredData = data.filter(obs => {
+            // Check both scientific name and common name
+            return invasiveSpeciesList.some(invasive => 
+                (obs.scientific_name && obs.scientific_name.toLowerCase() === invasive.name.toLowerCase()) ||
+                (obs.common_name && obs.common_name.toLowerCase() === invasive.common_name.toLowerCase())
+            );
+        });
+        
+        updateMap(filteredData);
+        updateBiodiversityStats(filteredData);
+        displayLatestDiscoveries(filteredData, { filter: 'invasive' });
+        
+        // Add invasive species info to stats
+        addInvasiveSpeciesInfo(filteredData);
+    });
+}
+
+// Add new function to display invasive species information
+function addInvasiveSpeciesInfo(filteredData) {
+    const statsDiv = document.getElementById('biodiversityStats');
+    if (!statsDiv) return;
+    
+    const invasiveCount = filteredData.length;
+    const speciesCounts = filteredData.reduce((acc, obs) => {
+        const name = obs.common_name || obs.scientific_name;
+        acc[name] = (acc[name] || 0) + 1;
+        return acc;
+    }, {});
+    
+    const invasiveInfo = document.createElement('div');
+    invasiveInfo.className = 'invasive-species-info';
+    invasiveInfo.innerHTML = `
+        <h3>Invasive Species Report</h3>
+        <p>Total invasive sightings: ${invasiveCount}</p>
+        <div class="invasive-species-list">
+            ${Object.entries(speciesCounts)
+                .sort(([,a], [,b]) => b - a)
+                .map(([species, count]) => {
+                    const invasiveDetails = invasiveSpeciesList.find(inv => 
+                        inv.common_name === species || inv.name === species
+                    );
+                    return `
+                        <div class="invasive-species-item">
+                            <h4>${species}</h4>
+                            <p>Sightings: ${count}</p>
+                            ${invasiveDetails ? `
+                                <p class="invasive-description">${invasiveDetails.description}</p>
+                                <p class="invasive-type">Type: ${invasiveDetails.type}</p>
+                            ` : ''}
+                        </div>
+                    `;
+                }).join('')}
+        </div>
+    `;
+    
+    // Insert the invasive info at the top of the stats
+    statsDiv.insertBefore(invasiveInfo, statsDiv.firstChild);
+}
+
+// Modify the document.addEventListener('DOMContentLoaded') section
+document.addEventListener('DOMContentLoaded', () => {
+    // ...existing initialization code...
+    
+    // Load invasive species data when the page loads
+    loadInvasiveSpecies();
+    
+    // Add event listener for invasive species filter
+    document.getElementById('invasiveFilter')?.addEventListener('click', function() {
+        this.classList.toggle('active');
+        
+        // Remove other active states from other filter buttons
+        document.querySelectorAll('.filter-button').forEach(btn => {
+            if (btn !== this) btn.classList.remove('active');
+        });
+        
+        if (this.classList.contains('active')) {
+            filterInvasiveSpecies();
+        } else {
+            resetMapFilter();
+        }
+    });
+    
+    // ...rest of existing initialization code...
+});
+
+// ...rest of existing code...
+
+// Add protected species list
+const PROTECTED_SPECIES = {
+    mammals: [
+        { name: 'Indiana Bat', scientific: 'Myotis sodalis', status: 'Federally endangered' },
+        { name: 'Northern Long-eared Bat', scientific: 'Myotis septentrionalis', status: 'Federally threatened' },
+        { name: 'Virginia Big-eared Bat', scientific: 'Corynorhinus townsendii virginianus', status: 'Federally endangered' }
+    ],
+    birds: [
+        { name: 'Piping Plover', scientific: 'Charadrius melodus', status: 'Federally threatened' },
+        { name: 'Red-cockaded Woodpecker', scientific: 'Picoides borealis', status: 'Federally endangered' },
+        { name: 'Bald Eagle', scientific: 'Haliaeetus leucocephalus', status: 'Protected under BGEPA' }
+    ],
+    reptiles: [
+        { name: 'Bog Turtle', scientific: 'Glyptemys muhlenbergii', status: 'Federally threatened' },
+        { name: 'Loggerhead Sea Turtle', scientific: 'Caretta caretta', status: 'Federally threatened' }
+    ],
+    amphibians: [
+        { name: 'Shenandoah Salamander', scientific: 'Plethodon shenandoah', status: 'Federally endangered' }
+    ],
+    fish: [
+        { name: 'Roanoke Logperch', scientific: 'Percina rex', status: 'Federally endangered' },
+        { name: 'Atlantic Sturgeon', scientific: 'Acipenser oxyrinchus', status: 'Federally endangered' }
+    ],
+    insects: [
+        { name: 'Rusty Patched Bumblebee', scientific: 'Bombus affinis', status: 'Federally endangered' }
+    ],
+    plants: [
+        { name: 'Small Whorled Pogonia', scientific: 'Isotria medeoloides', status: 'Federally threatened' },
+        { name: 'Harperella', scientific: 'Ptilimnium nodosum', status: 'Federally endangered' }
+    ]
+};
+
+function filterProtectedSpecies() {
+    const year = document.getElementById('yearFilter').value;
+    
+    loadYearlyData([year]).then(data => {
+        const allProtectedSpecies = Object.values(PROTECTED_SPECIES)
+            .flat()
+            .map(species => ({
+                commonName: species.name.toLowerCase(),
+                scientificName: species.scientific.toLowerCase(),
+                status: species.status
+            }));
+
+        const filteredData = data.filter(obs => {
+            const obsCommonName = (obs.common_name || '').toLowerCase();
+            const obsScientificName = (obs.scientific_name || '').toLowerCase();
+            
+            return allProtectedSpecies.some(protected => 
+                obsCommonName === protected.commonName ||
+                obsScientificName === protected.scientificName
+            );
+        });
+        
+        updateMap(filteredData);
+        updateBiodiversityStats(filteredData);
+        displayLatestDiscoveries(filteredData, { filter: 'protected' });
+    });
+}
+
+// Remove the addProtectedSpeciesInfo function as it's no longer needed
+
+// ...rest of existing code...
+
+function formatLocation(location) {
+    if (!location) return 'Location not specified';
+    
+    // Remove generic location references
+    let formatted = location
+        .replace(/, Virginia,? USA?$/i, '')
+        .replace(/, USA?$/i, '')
+        .replace(/^Fairfax County,?\s*/i, '')
+        .replace(/,?\s*Virginia$/i, '')
+        .trim();
+    
+    // If only generic location remains, indicate need for more detail
+    if (['Fairfax', '', 'Virginia'].includes(formatted)) {
+        return 'Location needs more detail';
+    }
+    
+    // Add park designation if missing
+    if (!/park|preserve|trail/i.test(formatted)) {
+        if (/^[A-Za-z\s]+$/.test(formatted)) {
+            formatted += ' area';
+        }
+    }
+    
+    return formatted;
+}
+
+// ...existing code...
+
+// In updateBiodiversityStats, update the recent sightings section:
+if (singleSpecies && observations.length > 0) {
+    // ...existing single species stats code...
+
+    const recentSightings = observations
+        .sort((a, b) => new Date(b.observed_on) - new Date(a.observed_on))
+        .slice(0, 5);
+
+    statsDiv.innerHTML = `
+        // ...existing stats html...
+
+        <div class="chart-section">
+            <h3>Recent Activity</h3>
+            <div class="recent-timeline">
+                ${recentSightings.map(obs => `
+                    <div class="timeline-item">
+                        <div class="timeline-header">
+                            <span class="timeline-date">${new Date(obs.observed_on).toLocaleDateString()}</span>
+                            ${obs.photo_url ? 
+                                `<span class="timeline-photo" title="Has photo">📸</span>` : 
+                                ''
+                            }
+                        </div>
+                        <div class="timeline-content">
+                            <span class="timeline-location">${formatLocation(obs.place_guess)}</span>
+                            ${obs.notes ? 
+                                `<span class="timeline-notes">${obs.notes}</span>` : 
+                                ''
+                            }
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+        // ...rest of existing html...
+    `;
+    
+    // ...rest of existing code...
+}
+
+// ...rest of existing code...

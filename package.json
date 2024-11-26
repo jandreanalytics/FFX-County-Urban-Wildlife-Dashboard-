@@ -1,0 +1,16 @@
+{
+  "dependencies": {
+    "node-fetch": "^3.3.2"
+  },
+  "name": "ffxdashboard",
+  "description": "An interactive web-based dashboard visualizing biodiversity data from Fairfax County, Virginia, using the iNaturalist API. This project aims to make local wildlife observations accessible and engaging for citizens, researchers, and nature enthusiasts.",
+  "version": "1.0.0",
+  "main": "attribution_test.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
