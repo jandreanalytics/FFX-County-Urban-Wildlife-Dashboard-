@@ -912,10 +912,13 @@ html {
     margin: 0;
 }
 
+/* Update cluster styles */
 .custom-cluster {
     display: flex;
     justify-content: center;
     align-items: center;
+    width: 36px !important;
+    height: 36px !important;
 }
 
 .cluster-dot {
@@ -923,14 +926,22 @@ html {
     height: 36px;
     background: white;
     border-radius: 50%;
-    border: 3px solid;
+    border: 2px solid;
     display: flex;
     align-items: center;
     justify-content: center;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    box-sizing: border-box;
 }
 
-/* Color borders based on dominant group */
+/* Single source of truth for cluster text size */
+.cluster-dot span {
+    font-size: 11px !important;
+    font-weight: bold;
+    color: #333;
+    line-height: 1;
+}
+
 .marker-aves .cluster-dot { border-color: #FF6B6B; }
 .marker-mammalia .cluster-dot { border-color: #4ECDC4; }
 .marker-plantae .cluster-dot { border-color: #45B7D1; }
@@ -938,12 +949,6 @@ html {
 .marker-amphibia .cluster-dot { border-color: #88D8B0; }
 .marker-insecta .cluster-dot { border-color: #FFCC5C; }
 .marker-actinopterygii .cluster-dot { border-color: #4A90E2; }
-
-.cluster-dot span {
-    font-size: 14px;
-    font-weight: bold;
-    color: #333;
-}
 
 .legend {
     background: white;

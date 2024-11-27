@@ -226,6 +226,48 @@ const INVASIVE_SPECIES = [
     }
 ];
 
+// Add this new constant for taxonomic classification
+const TAXONOMIC_GROUPS = {
+    // Birds
+    'Aves-waterfowl': ['Duck', 'Goose', 'Swan', 'Heron', 'Egret', 'Grebe', 'Cormorant'],
+    'Aves-raptors': ['Hawk', 'Eagle', 'Owl', 'Falcon', 'Osprey', 'Vulture', 'Kite'],
+    'Aves-songbirds': ['Warbler', 'Sparrow', 'Finch', 'Cardinal', 'Robin', 'Thrush', 'Chickadee', 'Titmouse', 'Nuthatch'],
+    'Aves-woodpeckers': ['Woodpecker', 'Sapsucker', 'Flicker'],
+    'Aves-other': [],  // Catch-all for other birds
+
+    // Mammals
+    'Mammalia-carnivora': ['Fox', 'Coyote', 'Raccoon', 'Skunk', 'Weasel', 'Otter'],
+    'Mammalia-rodentia': ['Squirrel', 'Chipmunk', 'Mouse', 'Vole', 'Beaver', 'Groundhog'],
+    'Mammalia-cervidae': ['Deer', 'Elk'],
+    'Mammalia-chiroptera': ['Bat'],
+    'Mammalia-other': [],  // Catch-all for other mammals
+
+    // Plants (add similar detailed classifications)
+    'Plantae-trees': ['Oak', 'Maple', 'Pine', 'Birch', 'Beech', 'Hickory', 'Dogwood'],
+    'Plantae-flowers': ['Violet', 'Trillium', 'Orchid', 'Lily', 'Aster', 'Goldenrod'],
+    'Plantae-ferns': ['Fern', 'Horsetail'],
+    'Plantae-grasses': ['Grass', 'Sedge', 'Rush'],
+    'Plantae-other': [],
+
+    // Reptiles (new)
+    'Reptilia-snakes': ['Ratsnake', 'Gartersnake', 'Copperhead', 'Kingsnake', 'Watersnake', 'Brownsnake', 'Wormsnake'],
+    'Reptilia-turtles': ['Box Turtle', 'Painted Turtle', 'Snapping Turtle', 'Slider', 'Mud Turtle', 'Musk Turtle'],
+    'Reptilia-lizards': ['Skink', 'Fence Lizard', 'Racerunner', 'Anole'],
+    'Reptilia-other': [],
+
+    // Amphibians (new)
+    'Amphibia-frogs': ['Bullfrog', 'Spring Peeper', 'Tree Frog', 'Wood Frog', 'Toad', 'Cricket Frog', 'Chorus Frog'],
+    'Amphibia-salamanders': ['Red-backed', 'Spotted', 'Red-spotted Newt', 'Dusky', 'Two-lined', 'Long-tailed'],
+    'Amphibia-other': [],
+
+    // Insects (new)
+    'Insecta-lepidoptera': ['Monarch', 'Swallowtail', 'Luna Moth', 'Skipper', 'Fritillary', 'Azure', 'Tiger Moth'],
+    'Insecta-hymenoptera': ['Bumblebee', 'Carpenter Bee', 'Paper Wasp', 'Yellowjacket', 'Honey Bee', 'Mason Bee'],
+    'Insecta-coleoptera': ['Lightning Bug', 'Lady Beetle', 'Japanese Beetle', 'Ground Beetle', 'Click Beetle'],
+    'Insecta-odonata': ['Common Whitetail', 'Blue Dasher', 'Eastern Pondhawk', 'Widow Skimmer', 'Ebony Jewelwing'],
+    'Insecta-other': []
+};
+
 // Initialize map
 let map = L.map('map', {
     zoomControl: false,
@@ -244,7 +286,6 @@ function createCustomClusterIcon(cluster) {
     const markers = cluster.getAllChildMarkers();
     const total = markers.length;
     
-    // Get the dominant group (most common)
     const groups = markers.reduce((acc, marker) => {
         const className = marker.options.icon.options.className;
         const group = className.split('-')[1];
@@ -264,7 +305,8 @@ function createCustomClusterIcon(cluster) {
             </div>
         `,
         className: 'cluster-icon',
-        iconSize: L.point(40, 40)
+        iconSize: L.point(36, 36),
+        iconAnchor: L.point(18, 18)
     });
 }
 
@@ -497,15 +539,40 @@ async function initializeDashboard() {
 // Filter functions
 function filterObservations(observations, filters) {
     return observations.filter(obs => {
+        // Handle taxonomic group filtering
         if (filters.taxonomicGroup && filters.taxonomicGroup !== 'all') {
-            if (obs.taxonomic_group !== filters.taxonomicGroup) return false;
+            const [mainGroup, subGroup] = filters.taxonomicGroup.split('-');
+            
+            // If no subgroup, just check main taxonomic group
+            if (!subGroup) {
+                if (obs.taxonomic_group !== mainGroup) return false;
+            } else {
+                // First check if it's in the correct main group
+                if (obs.taxonomic_group !== mainGroup) return false;
+                
+                // Then check if it matches any keywords for the subgroup
+                const keywords = TAXONOMIC_GROUPS[filters.taxonomicGroup];
+                if (keywords && keywords.length > 0) {
+                    const obsName = (obs.common_name || obs.species_name || '').toLowerCase();
+                    const matches = keywords.some(keyword => 
+                        obsName.includes(keyword.toLowerCase())
+                    );
+                    
+                    // If it doesn't match any keywords and this isn't an "other" category, exclude it
+                    if (!matches && !filters.taxonomicGroup.endsWith('-other')) return false;
+                    
+                    // If it matches any keywords and this is an "other" category, exclude it
+                    if (matches && filters.taxonomicGroup.endsWith('-other')) return false;
+                }
+            }
         }
-        
+
+        // Handle season filtering (existing code)
         if (filters.season) {
             const month = new Date(obs.observed_on).getMonth();
             if (!SEASONS[filters.season].includes(month)) return false;
         }
-        
+
         return true;
     });
 }
@@ -1159,7 +1226,6 @@ async function updateBiodiversityStats(observations, singleSpecies = false) {
 // UI Helper functions
 function createPopupContent(observation) {
     const speciesName = observation.common_name || observation.species_name;
-    const links = createSpeciesLink(speciesName);
     
     return `
         <div class="popup-content">
@@ -1168,22 +1234,13 @@ function createPopupContent(observation) {
                 <img src="${observation.photo_url}" alt="${speciesName}" class="popup-image">
             ` : ''}
             <p>Observed on: ${new Date(observation.observed_on).toLocaleDateString()}</p>
-            <div class="learn-more-section">
-                <h4>Learn More:</h4>
-                <div class="popup-links">
-                    <a href="${links.wiki}" target="_blank" rel="noopener">
-                        <svg class="wiki-icon" width="16" height="16" viewBox="0 0 24 24">
-                            <path fill="currentColor" d="M12.09 13.119c-.936 1.932-2.217 4.548-2.853 5.728-.616 1.074-1.127.931-1.532.029-1.406-3.321-4.293-9.144-5.651-12.409-.251-.601-.441-.987-.619-1.139-.181-.15-.554-.24-1.122-.271C.103 5.033 0 4.982 0 4.898v-.455l.052-.045c.924-.005 5.401 0 5.401 0l.051.045v.434c0 .084-.103.135-.2.157-.74.108-.835.361-.492 1.005.646 1.212 3.636 7.254 4.172 8.286.406-.978 2.01-4.021 2.619-5.222-.34-.601-.816-1.51-1.175-2.122-.418-.716-.629-.896-.927-1.005-.23-.084-.557-.135-1.122-.166-.102-.015-.193-.076-.193-.166v-.434L8.334 4.9h5.073l.042.045v.434c0 .084-.104.135-.197.157-.953.111-1.004.376-.583 1.005.642.93 1.33 2.168 1.953 3.278.826-1.738 1.669-3.519 2.39-5.494.167-.44.076-.564-.408-.59-.318-.018-.422-.076-.422-.166v-.434l.042-.045h4.253l.052.045v.434c0 .084-.104.135-.197.157-.953.111-1.456.419-2.199 1.928-.729 1.488-3.109 6.374-3.792 7.545-.45.785-.77.972-1.139.029-.75-1.591-1.924-3.957-2.758-5.585.874 1.499 3.111 6.395 3.669 7.576.409 1.14.116 1.787-.795 1.819-.315-.002-.419-.077-.419-.165v-.434l.043-.045z"/>
-                        </svg>
-                        Wikipedia
-                    </a>
-                    <a href="${links.inat}" target="_blank" rel="noopener">
-                        <svg class="inat-icon" width="16" height="16" viewBox="0 0 24 24">
-                            <path fill="currentColor" d="M12 1.2A10.8 10.8 0 1 0 22.8 12 10.8 10.8 0 0 0 12 1.2zm0 19.6A8.8 8.8 0 1 1 20.8 12 8.81 8.81 0 0 1 12 20.8zm4.5-8.83a4.5 4.5 0 1 1-4.5-4.5 4.5 4.5 0 0 1 4.5 4.5z"/>
-                        </svg>
-                        iNaturalist
-                    </a>
-                </div>
+            <div class="popup-links">
+                <a href="https://www.inaturalist.org/observations/${observation.id}" target="_blank" rel="noopener">
+                    <svg class="inat-icon" width="16" height="16" viewBox="0 0 24 24">
+                        <path fill="currentColor" d="M12 1.2A10.8 10.8 0 1 0 22.8 12 10.8 10.8 0 0 0 12 1.2zm0 19.6A8.8 8.8 0 1 1 20.8 12 8.81 8.81 0 0 1 12 20.8zm4.5-8.83a4.5 4.5 0 1 1-4.5-4.5 4.5 4.5 0 0 1 4.5 4.5z"/>
+                    </svg>
+                    See observation on iNaturalist
+                </a>
             </div>
         </div>
     `;
@@ -1323,9 +1380,18 @@ function handleFilterChange() {
     
     loadYearlyData([filter.year]).then(data => {
         const filteredData = filterObservations(data, filter);
+        
+        // Update map with filtered data
         updateMap(filteredData);
-        updateBiodiversityStats(filteredData);  // Update stats with filtered data
-        displayLatestDiscoveries(filteredData, filter);
+        
+        // Update stats with filtered data
+        updateBiodiversityStats(filteredData);
+        
+        // Update recent discoveries with filtered data and filter info
+        displayLatestDiscoveries(filteredData, {
+            year: filter.year,
+            taxonomicGroup: filter.taxonomicGroup
+        });
     });
 }
 
@@ -1844,6 +1910,3 @@ if (singleSpecies && observations.length > 0) {
     
     // ...rest of existing code...
 }
-
-// ...rest of existing code...
-
