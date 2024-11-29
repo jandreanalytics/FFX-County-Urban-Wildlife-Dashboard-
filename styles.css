@@ -9,7 +9,7 @@ body {
 }
 
 header {
-    position: relative;  /* Add this to contain the help panel */
+    position: relative; 
     background: linear-gradient(135deg, #4CAF50, #45a049);
     color: white;
     padding: 0.5rem 0;
@@ -23,6 +23,7 @@ header {
     justify-content: space-between;
     align-items: center;
     padding: 0 2rem;
+    position: relative;
 }
 
 .help-button {
@@ -75,8 +76,8 @@ header {
 .help-grid {
     display: flex;
     flex-direction: row;
-    flex-wrap: nowrap; /* Prevent wrapping */
-    justify-content: space-between; /* Changed from space-evenly */
+    flex-wrap: nowrap;
+    justify-content: space-between;
     gap: 0.5rem;
     max-width: 1200px;
     margin: 0 auto;
@@ -97,21 +98,21 @@ header {
     padding: 0.75rem;
     background: #f8f9fa;
     border-radius: 6px;
-    min-width: auto; /* Remove min-width constraint */
-    max-width: none; /* Remove max-width constraint */
+    min-width: auto;
+    max-width: none;
 }
 
 @media (max-width: 768px) {
     .help-grid {
-        flex-wrap: wrap; /* Allow wrapping on mobile */
+        flex-wrap: wrap;
     }
     
     .help-item {
-        min-width: 100%; /* Full width on mobile */
+        min-width: 100%;
     }
     
     .help-item p {
-        white-space: normal; /* Allow text wrapping on mobile */
+        white-space: normal;
     }
 }
 
@@ -122,7 +123,7 @@ header {
 .help-item p {
     font-size: 0.85rem;
     margin: 0;
-    /* Remove text truncation */
+   
     white-space: normal;
     overflow: visible;
     text-overflow: clip;
@@ -130,17 +131,17 @@ header {
 }
 
 main {
-    width: 95%; /* Increase from 80% */
-    max-width: 1800px; /* Add maximum width */
-    margin: 0 auto; /* Remove top margin */
+    width: 95%;
+    max-width: 1800px;
+    margin: 0 auto;
     padding: 1.5rem 0;
-    overflow: hidden; /* Add this to contain the grid */
+    overflow: hidden;
 }
 
 #map {
     width: 100%;
-    height: 100%; /* Changed from fixed height to 100% */
-    margin-bottom: 0; /* Remove bottom margin */
+    height: 100%;
+    margin-bottom: 0;
 }
 
 .chart-box {
@@ -153,7 +154,7 @@ main {
     flex-wrap: wrap;
     gap: 1rem;
     align-items: center;
-    justify-content: center; /* Center everything in the filter box */
+    justify-content: center;
     background: white;
     border-radius: 20px;
     padding: 1.2rem;
@@ -165,7 +166,7 @@ main {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    min-width: 150px; /* Ensure a minimum width for each filter group */
+    min-width: 150px;
 }
 
 .search-wrapper {
@@ -205,7 +206,7 @@ main {
     background: #f8d7da;
     color: #721c24;
     border: 1px solid #f5c6cb;
-    width: 100%; /* Make the button take full width */
+    width: 100%;
 }
 
 .invasive-species-button:hover {
@@ -215,8 +216,8 @@ main {
 
 .dashboard-grid {
     display: grid;
-    grid-template-columns: 3.5fr 1.5fr; /* Give more space to main content */
-    grid-template-rows: 500px 1fr; /* Map fixed, content flexible */
+    grid-template-columns: 3.5fr 1.5fr;
+    grid-template-rows: 500px 1fr;
     gap: 1rem;
     width: 100%;
 }
@@ -240,7 +241,7 @@ main {
     transform: scale(1.2);
 }
 
-/* Update marker colors with more specific selectors */
+
 .marker-aves .marker-dot { background-color: #FF6B6B; }
 .marker-mammalia .marker-dot { background-color: #4ECDC4; }
 .marker-plantae .marker-dot { background-color: #45B7D1; }
@@ -257,7 +258,7 @@ main {
     gap: 1rem;
     padding: 0;
     margin: 0;
-    grid-auto-rows: min-content; /* This ensures cards don't overlap */
+    grid-auto-rows: min-content;
 }
 
 .recent-card {
@@ -269,8 +270,8 @@ main {
     cursor: pointer;
     position: relative;
     aspect-ratio: 1;
-    height: auto; /* Remove fixed height */
-    min-height: 150px; /* Add minimum height */
+    height: auto;
+    min-height: 150px;
     display: flex;
     flex-direction: column;
 }
@@ -306,13 +307,14 @@ main {
 .recent-info p {
     margin: 2px 0 0 0;
     font-size: 0.7rem;
-    color: white;
+    color: white; 
+    font-weight: bold; 
 }
 
 .recent-info .latest-date {
     font-weight: bold;
     font-style: italic;
-    color: white;
+    color: white; 
 }
 
 .no-photo {
@@ -324,13 +326,13 @@ main {
     color: #666;
 }
 
-/* Capitalize each part of the species common names */
+
 .species-name {
     text-transform: capitalize;
 }
 
 
-/* Modern select styling */
+
 select, input[type="text"] {
     appearance: none;
     background: #f8f9fa;
@@ -347,7 +349,7 @@ select:hover, input[type="text"]:hover {
     background: #f1f3f5;
 }
 
-/* Modern button styling */
+
 .season-buttons button {
     background: #f8f9fa;
     border: 1px solid #e9ecef;
@@ -363,7 +365,7 @@ select:hover, input[type="text"]:hover {
     border-color: #4CAF50;
 }
 
-/* Biodiversity Summary styling */
+
 .biodiversity-summary {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -383,7 +385,7 @@ select:hover, input[type="text"]:hover {
     color: #2b8a3e;
 }
 
-/* Loading animation */
+
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
@@ -412,7 +414,7 @@ select:hover, input[type="text"]:hover {
     color: #4CAF50;
 }
 
-/* Add these styles */
+
 .filter-group {
     display: flex;
     flex-direction: column;
@@ -433,7 +435,7 @@ select:hover, input[type="text"]:hover {
     font-size: 0.9rem;
     cursor: pointer;
     transition: all 0.2s;
-    width: 100%; /* Match the width of the dropdown */
+    width: 100%;
 }
 
 .filter-group input[type="text"]:focus {
@@ -463,7 +465,7 @@ select:hover, input[type="text"]:hover {
     border-color: #4CAF50;
 }
 
-/* Map section styling */
+
 .map-section {
     grid-column: 1;
     grid-row: 1;
@@ -478,11 +480,11 @@ select:hover, input[type="text"]:hover {
 
 #map {
     width: 100%;
-    height: 100%; /* Fixed height instead of flex-grow */
+    height: 100%;
     border-radius: 8px;
 }
 
-/* Recent sightings section */
+
 .recent-sightings-section {
     grid-column: 1;
     grid-row: 2;
@@ -491,12 +493,12 @@ select:hover, input[type="text"]:hover {
     padding: 1rem;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     margin: 0;
-    min-height: 100%; /* Fill available space */
+    min-height: 100%;
     display: flex;
     flex-direction: column;
 }
 
-/* Recent grid with controlled scroll */
+
 .recent-grid {
     flex: 1;
     overflow-y: auto;
@@ -504,7 +506,7 @@ select:hover, input[type="text"]:hover {
     padding: 0;
 }
 
-/* Stats section styling */
+
 .stats-section {
     grid-column: 2;
     grid-row: 1 / span 2;
@@ -514,10 +516,10 @@ select:hover, input[type="text"]:hover {
     background: white;
     border-radius: 12px;
     padding: 1rem;
-    min-width: 350px; /* Ensure minimum width for statistics */
+    min-width: 350px;
 }
 
-/* Stats section - full height */
+
 .stats-section {
     grid-column: 2;
     grid-row: 1 / span 2;
@@ -548,9 +550,11 @@ select:hover, input[type="text"]:hover {
     border-radius: 12px;
     font-size: 0.75rem;
     margin-top: 4px;
+    font-weight: bold; 
+    color: white; 
 }
 
-/* Add modal styling */
+
 .species-modal {
     position: fixed;
     top: 0;
@@ -612,7 +616,7 @@ select:hover, input[type="text"]:hover {
     background: #e0e0e0;
 }
 
-/* Mobile responsiveness */
+
 @media (max-width: 768px) {
     .dashboard-grid {
         grid-template-columns: 1fr;
@@ -652,7 +656,7 @@ select:hover, input[type="text"]:hover {
     }
 }
 
-/* Modern filter styling */
+
 .filter-group select, .filter-group input[type="text"] {
     background: #f8f9fa;
     border: 2px solid #e9ecef;
@@ -668,7 +672,7 @@ select:hover, input[type="text"]:hover {
     background: #f1f3f5;
 }
 
-/* Modern filter styling */
+
 .dashboard-controls {
     background: white;
     border-radius: 20px;
@@ -702,12 +706,12 @@ select:hover, input[type="text"]:hover {
     transform: scale(1.05);
 }
 
-/* Add smooth scrolling */
+
 html {
     scroll-behavior: smooth;
 }
 
-/* Loading states */
+
 .loading {
     position: relative;
 }
@@ -728,7 +732,7 @@ html {
     100% { transform: translateX(100%); }
 }
 
-/* Toast notifications */
+
 .toast {
     position: fixed;
     bottom: 20px;
@@ -748,7 +752,7 @@ html {
     to { opacity: 1; transform: translate(-50%, 0); }
 }
 
-/* Add styling for the new stats badges */
+
 .stat-badge {
     display: inline-block;
     background: rgba(76, 175, 80, 0.1);
@@ -793,7 +797,7 @@ html {
     border-radius: 20px;
 }
 
-/* Custom scrollbar styling */
+
 .recent-grid::-webkit-scrollbar {
     width: 8px;
 }
@@ -893,7 +897,7 @@ html {
     transform: translateY(-4px);
 }
 
-/* Improve marker visibility */
+
 .marker-dot {
     width: 15px;
     height: 15px;
@@ -901,7 +905,7 @@ html {
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
-/* Add pulse effect for single species view */
+
 .species-highlight .marker-dot {
     animation: pulse 1.5s infinite;
 }
@@ -924,7 +928,7 @@ html {
     margin: 0;
 }
 
-/* Update cluster styles */
+
 .custom-cluster {
     display: flex;
     justify-content: center;
@@ -946,7 +950,7 @@ html {
     box-sizing: border-box;
 }
 
-/* Single source of truth for cluster text size */
+
 .cluster-dot span {
     font-size: 11px !important;
     font-weight: bold;
@@ -1006,7 +1010,7 @@ html {
     height: 8px;
 }
 
-/* Add hover effect for better UX */
+
 .legend:hover {
     opacity: 1;
 }
@@ -1151,7 +1155,7 @@ html {
     background: white;
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    min-height: 300px; /* Ensure charts have enough height */
+    min-height: 300px;
 }
 
 .stat-section {
@@ -1192,12 +1196,12 @@ html {
 }
 
 .popup-image {
-    width: 100px;  /* Fixed width */
-    height: 100px; /* Fixed height */
-    object-fit: cover; /* Maintains aspect ratio */
+    width: 100px; 
+    height: 100px;
+    object-fit: cover;
     border-radius: 4px;
     margin: 8px auto;
-    display: block; /* Centers the image */
+    display: block;
     border: 1px solid #eee;
 }
 
@@ -1228,7 +1232,7 @@ html {
     height: 16px;
 }
 
-/* Make chart bars clickable */
+
 #speciesChart {
     cursor: pointer;
 }
@@ -1269,7 +1273,7 @@ html {
     font-size: 1.2rem;
 }
 
-/* ...existing code... */
+
 
 .search-wrapper {
     display: flex;
@@ -1293,21 +1297,21 @@ html {
     color: white;
 }
 
-/* Fix spacing between map and wildlife sightings */
 
-/* ...existing code... */
+
+
 
 function displayLatestDiscoveries(observations, filters = {}) {
     const recentDiv = document.getElementById('recentObservations');
     if (!recentDiv) return;
     
-    // ... existing code ...
     
-    recentDiv.style.height = 'auto';  // Remove any fixed heights
-    // ... rest of the code ...
+    
+    recentDiv.style.height = 'auto';  
+    
 }
 
-/* Recent sightings section - fixed container */
+
 .recent-sightings-section {
     grid-column: 1;
     grid-row: 2;
@@ -1318,7 +1322,7 @@ function displayLatestDiscoveries(observations, filters = {}) {
     margin: 0;
 }
 
-/* Recent grid - no scroll */
+
 .recent-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -1327,7 +1331,7 @@ function displayLatestDiscoveries(observations, filters = {}) {
     margin: 0 0 1rem 0;
 }
 
-/* Pagination controls */
+
 .pagination {
     display: flex;
     justify-content: center;
@@ -1361,7 +1365,7 @@ function displayLatestDiscoveries(observations, filters = {}) {
     cursor: not-allowed;
 }
 
-/* Add to styles.css */
+
 .action-buttons {
     display: flex;
     gap: 1rem;
@@ -1449,7 +1453,7 @@ function displayLatestDiscoveries(observations, filters = {}) {
     transform: translateY(1px);
 }
 
-/* Update season buttons to match quick filter style */
+
 .season-buttons {
     display: flex;
     gap: 0.5rem;
@@ -1465,7 +1469,7 @@ function displayLatestDiscoveries(observations, filters = {}) {
     transition: all 0.2s;
 }
 
-/* Season-specific styles */
+
 .season-button-all {
     background: #f8f9fa;
     color: #666;
@@ -1501,7 +1505,7 @@ function displayLatestDiscoveries(observations, filters = {}) {
     transform: translateY(1px);
 }
 
-/* Single species stats styling */
+
 .single-species-stats {
     padding: 1.5rem;
     background: white;
@@ -1573,7 +1577,7 @@ function displayLatestDiscoveries(observations, filters = {}) {
     font-size: 0.9rem;
 }
 
-/* ...existing code... */
+
 
 .recent-timeline {
     display: flex;
@@ -1631,9 +1635,9 @@ function displayLatestDiscoveries(observations, filters = {}) {
     font-style: italic;
 }
 
-/* ...rest of existing code... */
 
-/* Stats loading state */
+
+
 .stats-loading {
     display: flex;
     flex-direction: column;
@@ -1657,4 +1661,59 @@ function displayLatestDiscoveries(observations, filters = {}) {
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+.author {
+    font-size: 0.9rem;
+    margin: 0;
+    opacity: 0.9;
+}
+
+.author a {
+    color: white;
+    text-decoration: none;
+    border-bottom: 1px dotted rgba(255,255,255,0.5);
+}
+
+.author a:hover {
+    border-bottom: 1px solid white;
+}
+
+.header-buttons {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.credits-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+.credits-section {
+    background: rgba(255,255,255,0.9);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+.credits-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+}
+
+.credits-section li {
+    margin-bottom: 1rem;
+    line-height: 1.4;
+}
+
+.credits-section a {
+    color: #4CAF50;
+    text-decoration: none;
+}
+
+.credits-section a:hover {
+    text-decoration: underline;
 }

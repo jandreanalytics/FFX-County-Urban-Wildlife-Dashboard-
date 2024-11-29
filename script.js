@@ -1497,6 +1497,32 @@ document.addEventListener('DOMContentLoaded', () => {
             resetMapFilter();
         }
     });
+
+    // Add event listener for credits button
+    document.getElementById('creditsToggle').addEventListener('click', () => {
+        const creditsPanel = document.getElementById('creditsPanel');
+        const helpPanel = document.getElementById('helpPanel');
+        
+        // Hide help panel if it's visible
+        if (helpPanel.classList.contains('visible')) {
+            helpPanel.classList.remove('visible');
+        }
+        
+        creditsPanel.classList.toggle('visible');
+    });
+
+    // Modify help button to also close credits panel
+    document.getElementById('helpToggle').addEventListener('click', () => {
+        const helpPanel = document.getElementById('helpPanel');
+        const creditsPanel = document.getElementById('creditsPanel');
+        
+        // Hide credits panel if it's visible
+        if (creditsPanel.classList.contains('visible')) {
+            creditsPanel.classList.remove('visible');
+        }
+        
+        helpPanel.classList.toggle('visible');
+    });
 });
 
 // Filter handling functions
