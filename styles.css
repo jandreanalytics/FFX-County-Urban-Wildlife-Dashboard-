@@ -306,7 +306,13 @@ main {
 .recent-info p {
     margin: 2px 0 0 0;
     font-size: 0.7rem;
-    color: #666;
+    color: white;
+}
+
+.recent-info .latest-date {
+    font-weight: bold;
+    font-style: italic;
+    color: white;
 }
 
 .no-photo {
@@ -317,6 +323,12 @@ main {
     justify-content: center;
     color: #666;
 }
+
+/* Capitalize each part of the species common names */
+.species-name {
+    text-transform: capitalize;
+}
+
 
 /* Modern select styling */
 select, input[type="text"] {

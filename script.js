@@ -233,39 +233,45 @@ const TAXONOMIC_GROUPS = {
     'Aves-raptors': ['Hawk', 'Eagle', 'Owl', 'Falcon', 'Osprey', 'Vulture', 'Kite'],
     'Aves-songbirds': ['Warbler', 'Sparrow', 'Finch', 'Cardinal', 'Robin', 'Thrush', 'Chickadee', 'Titmouse', 'Nuthatch'],
     'Aves-woodpeckers': ['Woodpecker', 'Sapsucker', 'Flicker'],
-    'Aves-other': [],  // Catch-all for other birds
+    'Aves-all': [],  // Change to All Birds
 
     // Mammals
     'Mammalia-carnivora': ['Fox', 'Coyote', 'Raccoon', 'Skunk', 'Weasel', 'Otter'],
-    'Mammalia-rodentia': ['Squirrel', 'Chipmunk', 'Mouse', 'Vole', 'Beaver', 'Groundhog'],
-    'Mammalia-cervidae': ['Deer', 'Elk'],
+    'Mammalia-rodentia': ['Squirrel', 'Chipmunk', 'Mouse', 'Vole', 'Beaver', 'Groundhog', 'Deer Mouse'],
+    'Mammalia-cervidae': ['White-tailed Deer', 'Mule Deer', 'Elk', 'Moose', 'Caribou'],
     'Mammalia-chiroptera': ['Bat'],
-    'Mammalia-other': [],  // Catch-all for other mammals
+    'Mammalia-all': [],  // Change to All Mammals
 
-    // Plants (add similar detailed classifications)
+    // Plants
     'Plantae-trees': ['Oak', 'Maple', 'Pine', 'Birch', 'Beech', 'Hickory', 'Dogwood'],
     'Plantae-flowers': ['Violet', 'Trillium', 'Orchid', 'Lily', 'Aster', 'Goldenrod'],
     'Plantae-ferns': ['Fern', 'Horsetail'],
     'Plantae-grasses': ['Grass', 'Sedge', 'Rush'],
-    'Plantae-other': [],
+    'Plantae-all': [],  // Change to All Plants
 
-    // Reptiles (new)
+    // Reptiles
     'Reptilia-snakes': ['Ratsnake', 'Gartersnake', 'Copperhead', 'Kingsnake', 'Watersnake', 'Brownsnake', 'Wormsnake'],
     'Reptilia-turtles': ['Box Turtle', 'Painted Turtle', 'Snapping Turtle', 'Slider', 'Mud Turtle', 'Musk Turtle'],
     'Reptilia-lizards': ['Skink', 'Fence Lizard', 'Racerunner', 'Anole'],
-    'Reptilia-other': [],
+    'Reptilia-all': [],  // Change to All Reptiles
 
-    // Amphibians (new)
+    // Amphibians
     'Amphibia-frogs': ['Bullfrog', 'Spring Peeper', 'Tree Frog', 'Wood Frog', 'Toad', 'Cricket Frog', 'Chorus Frog'],
     'Amphibia-salamanders': ['Red-backed', 'Spotted', 'Red-spotted Newt', 'Dusky', 'Two-lined', 'Long-tailed'],
-    'Amphibia-other': [],
+    'Amphibia-all': [],  // Change to All Amphibians
 
-    // Insects (new)
+    // Insects
     'Insecta-lepidoptera': ['Monarch', 'Swallowtail', 'Luna Moth', 'Skipper', 'Fritillary', 'Azure', 'Tiger Moth'],
     'Insecta-hymenoptera': ['Bumblebee', 'Carpenter Bee', 'Paper Wasp', 'Yellowjacket', 'Honey Bee', 'Mason Bee'],
     'Insecta-coleoptera': ['Lightning Bug', 'Lady Beetle', 'Japanese Beetle', 'Ground Beetle', 'Click Beetle'],
     'Insecta-odonata': ['Common Whitetail', 'Blue Dasher', 'Eastern Pondhawk', 'Widow Skimmer', 'Ebony Jewelwing'],
-    'Insecta-other': []
+    'Insecta-all': []  // Change to All Insects
+};
+
+// Add after the TAXONOMIC_GROUPS constant
+const WEATHER_API = {
+    station: 'KDCA', // Washington DC station
+    baseUrl: 'https://api.weather.gov/stations/'
 };
 
 // Initialize map
@@ -940,9 +946,21 @@ async function updateBiodiversityStats(observations, singleSpecies = false) {
                 new Date(obs.observed_on).getFullYear() === year
             );
 
-            // Apply current filters to historical data
+            // Fix the taxonomic filtering here - Use the same filtering logic as the main filter
             if (currentFilters.taxonomicGroup !== 'all') {
-                yearData = yearData.filter(obs => obs.taxonomic_group === currentFilters.taxonomicGroup);
+                const [mainGroup, subGroup] = currentFilters.taxonomicGroup.split('-');
+                yearData = yearData.filter(obs => {
+                    // For 'all' subgroup (e.g., 'Aves-all'), just check main taxonomic group
+                    if (subGroup === 'all') {
+                        return obs.taxonomic_group === mainGroup;
+                    }
+                    
+                    // For specific subgroups, check both taxonomic group and keywords
+                    const keywords = TAXONOMIC_GROUPS[currentFilters.taxonomicGroup] || [];
+                    const obsName = (obs.common_name || obs.species_name || '').toLowerCase();
+                    return obs.taxonomic_group === mainGroup && 
+                           keywords.some(keyword => obsName.includes(keyword.toLowerCase()));
+                });
             }
             if (currentFilters.invasive) {
                 yearData = yearData.filter(obs => 
@@ -1014,7 +1032,6 @@ async function updateBiodiversityStats(observations, singleSpecies = false) {
                         <canvas id="yearlyChart"></canvas>
                     </div>
                 </div>
-            </div>
         `;
 
         // Create Species Chart with abbreviated names
@@ -1220,7 +1237,118 @@ async function updateBiodiversityStats(observations, singleSpecies = false) {
                 maintainAspectRatio: false
             }
         });
+
+        // Add the climatic correlation chart
+        addClimaticChart(observations, document.getElementById('climaticChart'));
     }
+}
+
+// Add new function to fetch weather data
+async function getWeatherData(date) {
+    const dateStr = date.toISOString().split('T')[0];
+    try {
+        const response = await fetch(`${WEATHER_API.baseUrl}${WEATHER_API.station}/observations?start=${dateStr}&end=${dateStr}`);
+        const data = await response.json();
+        return {
+            date: dateStr,
+            temp: data.features[0]?.properties?.temperature?.value || null,
+            precip: data.features[0]?.properties?.precipitation?.value || null
+        };
+    } catch (error) {
+        console.warn(`Failed to fetch weather for ${dateStr}:`, error);
+        return null;
+    }
+}
+
+// Add correlation analysis function
+async function analyzeClimaticCorrelation(observations) {
+    const weatherCache = new Map();
+    const correlationData = [];
+
+    for (const obs of observations) {
+        const date = new Date(obs.observed_on);
+        const dateKey = date.toISOString().split('T')[0];
+        
+        if (!weatherCache.has(dateKey)) {
+            weatherCache.set(dateKey, await getWeatherData(date));
+        }
+        
+        const weather = weatherCache.get(dateKey);
+        if (weather?.temp !== null) {
+            correlationData.push({
+                temp: weather.temp,
+                count: 1,
+                date: dateKey
+            });
+        }
+    }
+
+    // Aggregate by date
+    const aggregated = correlationData.reduce((acc, curr) => {
+        const existing = acc.find(x => x.date === curr.date);
+        if (existing) {
+            existing.count++;
+        } else {
+            acc.push(curr);
+        }
+        return acc;
+    }, []);
+
+    return aggregated;
+}
+
+// Add to updateBiodiversityStats function, before the final closing brace
+async function addClimaticChart(data, container) {
+    const correlationData = await analyzeClimaticCorrelation(data);
+    
+    const ctx = document.createElement('canvas');
+    container.appendChild(ctx);
+
+    new Chart(ctx, {
+        type: 'scatter',
+        data: {
+            datasets: [{
+                label: 'Observations vs Temperature',
+                data: correlationData.map(d => ({
+                    x: d.temp,
+                    y: d.count
+                })),
+                backgroundColor: 'rgba(76, 175, 80, 0.5)'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Temperature Correlation'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: (context) => {
+                            return `${context.raw.y} observations at ${context.raw.x.toFixed(1)}°C`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Temperature (°C)'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Number of Observations'
+                    },
+                    beginAtZero: true
+                }
+            }
+        }
+    });
 }
 
 // UI Helper functions
