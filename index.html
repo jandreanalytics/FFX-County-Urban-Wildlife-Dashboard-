@@ -8,9 +8,12 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
-    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+    <!-- Load map dependencies first -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
     <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js" defer></script>
+    <!-- Load Chart.js after map scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+    <!-- Load our script last -->
     <script src="script.js" defer></script>
 </head>
 <body>
@@ -19,46 +22,46 @@
             <h1>FFX Wildlife Watch: Interactive Species Explorer</h1>
             <p class="author">Site constructed by <a href="https://www.linkedin.com/in/jeremy-andre-a18925241/" target="_blank">Jeremy Andre</a></p>
             <div class="header-buttons">
-                <button id="helpToggle" class="help-button">
-                    <span>❔</span> How to Use
-                </button>
-                <button id="creditsToggle" class="help-button">
-                    <span>ℹ️</span> Credits & Resources
+                <button id="guideToggle" class="help-button">
+                    <span>ℹ️</span> Guide & Resources
                 </button>
             </div>
         </div>
-        <div id="helpPanel" class="help-panel hidden">
-            <div class="help-grid">
-                <div class="help-item">
-                    <span>🔍</span>
-                    <p>Search by species name or filter by category</p>
+        <div id="guidePanel" class="help-panel">
+            <div class="guide-content">
+                <div class="guide-section">
+                    <h3>How to Use This Tool</h3>
+                    <div class="help-grid">
+                        <div class="help-item">
+                            <span>🔍</span>
+                            <p>Search by species name or filter by category</p>
+                        </div>
+                        <div class="help-item">
+                            <span>📅</span>
+                            <p>Select year and season to see wildlife patterns</p>
+                        </div>
+                        <div class="help-item">
+                            <span>📸</span>
+                            <p>Click photos to see detailed sightings</p>
+                        </div>
+                        <div class="help-item">
+                            <span>📊</span>
+                            <p>View statistics and trends in the side panel</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="help-item">
-                    <span>📅</span>
-                    <p>Select year and season to see wildlife patterns</p>
-                </div>
-                <div class="help-item">
-                    <span>📸</span>
-                    <p>Click photos to see detailed sightings</p>
-                </div>
-                <div class="help-item">
-                    <span>📊</span>
-                    <p>View statistics and trends in the side panel</p>
-                </div>
-            </div>
-        </div>
-        <div id="creditsPanel" class="help-panel">
-            <div class="credits-content">
-                <h3>Credits & Resources</h3>
-                <div class="credits-section">
-                    <p>This project draws upon data and resources from the following sources:</p>
-                    <ul>
-                        <li><strong>iNaturalist</strong>: Observational data is utilized and credited in individual map popups.</li>
-                        <li><strong>U.S. Fish and Wildlife Service's ECOS</strong>: Reference for protected species listings.</li>
-                        <li><strong>Invasive Species Data</strong>: Sourced from <a href="https://www.fairfaxcounty.gov/publicworks/invasive-species" target="_blank">Fairfax County Public Works</a> and <a href="https://www.invasivespeciesva.org/species" target="_blank">Virginia Invasive Species Council</a>.</li>
-                        <li><strong>Pollinator Data</strong>: Identified by filtering observations of known pollinating species genera.</li>
-                        <li><strong>Geospatial Data</strong>: Filtered using <a href="https://data-fairfaxcountygis.opendata.arcgis.com/datasets/Fairfaxcountygis::fairfax-county-boundary/explore" target="_blank">Fairfax County Boundary dataset</a>.</li>
-                    </ul>
+                <div class="guide-section">
+                    <h3>Credits & Resources</h3>
+                    <div class="credits-section">
+                        <p>This project draws upon data and resources from the following sources:</p>
+                        <ul>
+                            <li><strong>iNaturalist</strong>: Observational data is utilized and credited in individual map popups.</li>
+                            <li><strong>U.S. Fish and Wildlife Service's ECOS</strong>: Reference for protected species listings.</li>
+                            <li><strong>Invasive Species Data</strong>: Sourced from <a href="https://www.fairfaxcounty.gov/publicworks/invasive-species" target="_blank">Fairfax County Public Works</a>, <a href="https://www.invasivespeciesva.org/species" target="_blank">Virginia Invasive Species Council</a>, and <a href="https://www.dcr.virginia.gov/natural-heritage/invspinfo" target="_blank">Virginia Department of Conservation and Recreation</a>.</li>
+                            <li><strong>Pollinator Data</strong>: Identified by filtering observations of known pollinating species genera.</li>
+                            <li><strong>Geospatial Data</strong>: Filtered using <a href="https://data-fairfaxcountygis.opendata.arcgis.com/datasets/Fairfaxcountygis::fairfax-county-boundary/explore" target="_blank">Fairfax County Boundary dataset</a>.</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>

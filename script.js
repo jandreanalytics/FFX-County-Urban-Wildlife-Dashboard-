@@ -16,213 +16,269 @@ const SEASONS = {
 };
 // Define invasive species list directly
 const INVASIVE_SPECIES = [
-    // Mammals
+    // Animals
+    {
+        name: "Aedes albopictus",
+        common_name: "Asian tiger mosquito",
+        type: "Insect"
+    },
+    {
+        name: "Anoplophora glabripennis",
+        common_name: "Asian longhorned beetle",
+        type: "Insect"
+    },
+    {
+        name: "Carcinus maenas",
+        common_name: "European green crab",
+        type: "Crustacean"
+    },
+    {
+        name: "Dreissena polymorpha",
+        common_name: "Zebra mussel",
+        type: "Mollusk"
+    },
+    {
+        name: "Eriocheir sinensis",
+        common_name: "Chinese mitten crab",
+        type: "Crustacean"
+    },
     {
         name: "Myocastor coypus",
         common_name: "Nutria",
-        type: "Mammal",
-        description: "Semi-aquatic rodent that damages wetland ecosystems"
+        type: "Mammal"
+    },
+    {
+        name: "Procambarus clarkii",
+        common_name: "Red swamp crayfish",
+        type: "Crustacean"
+    },
+    {
+        name: "Solenopsis invicta",
+        common_name: "Red imported fire ant",
+        type: "Insect"
+    },
+    {
+        name: "Trachemys scripta elegans",
+        common_name: "Red-eared slider turtle",
+        type: "Reptile"
+    },
+    // Plants
+    {
+        name: "Ailanthus altissima",
+        common_name: "Tree-of-heaven",
+        type: "Tree"
+    },
+    {
+        name: "Alliaria petiolata",
+        common_name: "Garlic mustard",
+        type: "Herb"
+    },
+    {
+        name: "Ampelopsis glandulosa",
+        common_name: "Porcelain-berry",
+        type: "Vine"
+    },
+    {
+        name: "Arum italicum",
+        common_name: "Italian arum",
+        type: "Herb"
+    },
+    {
+        name: "Celastrus orbiculatus",
+        common_name: "Oriental bittersweet",
+        type: "Vine"
+    },
+    {
+        name: "Centaurea stoebe",
+        common_name: "Spotted knapweed",
+        type: "Herb"
+    },
+    {
+        name: "Cirsium arvense",
+        common_name: "Canada thistle",
+        type: "Herb"
+    },
+    {
+        name: "Dioscorea polystachya",
+        common_name: "Cinnamon vine",
+        type: "Vine"
+    },
+    {
+        name: "Elaeagnus umbellata",
+        common_name: "Autumn olive",
+        type: "Shrub"
+    },
+    {
+        name: "Euonymus alatus",
+        common_name: "Winged euonymus",
+        type: "Shrub"
+    },
+    {
+        name: "Hydrilla verticillata",
+        common_name: "Hydrilla",
+        type: "Aquatic"
+    },
+    {
+        name: "Imperata cylindrica",
+        common_name: "Cogon grass",
+        type: "Grass"
+    },
+    {
+        name: "Iris pseudacorus",
+        common_name: "Yellow flag",
+        type: "Herb"
+    },
+    {
+        name: "Lespedeza cuneata",
+        common_name: "Sericea lespedeza",
+        type: "Herb"
+    },
+    {
+        name: "Ligustrum sinense",
+        common_name: "Chinese privet",
+        type: "Shrub"
+    },
+    {
+        name: "Lonicera japonica",
+        common_name: "Japanese honeysuckle",
+        type: "Vine"
+    },
+    {
+        name: "Lonicera maackii",
+        common_name: "Amur honeysuckle",
+        type: "Shrub"
+    },
+    {
+        name: "Lonicera morrowii",
+        common_name: "Morrow's honeysuckle",
+        type: "Shrub"
+    },
+    {
+        name: "Ludwigia hexapetala",
+        common_name: "Large-flowered primrose-willow",
+        type: "Aquatic"
+    },
+    {
+        name: "Ludwigia peploides",
+        common_name: "Floating primrose-willow",
+        type: "Aquatic"
+    },
+    {
+        name: "Lythrum salicaria",
+        common_name: "Purple loosestrife",
+        type: "Herb"
+    },
+    {
+        name: "Microstegium vimineum",
+        common_name: "Japanese stiltgrass",
+        type: "Grass"
+    },
+    {
+        name: "Murdannia keisak",
+        common_name: "Marsh dewflower",
+        type: "Herb"
+    },
+    {
+        name: "Myriophyllum aquaticum",
+        common_name: "Parrot feather",
+        type: "Aquatic"
+    },
+    {
+        name: "Myriophyllum spicatum",
+        common_name: "Eurasian water-milfoil",
+        type: "Aquatic"
+    },
+    {
+        name: "Oplismenus undulatifolius",
+        common_name: "Wavy-leaf grass",
+        type: "Grass"
+    },
+    {
+        name: "Persicaria perfoliata",
+        common_name: "Mile-a-minute",
+        type: "Vine"
+    },
+    {
+        name: "Phragmites australis",
+        common_name: "Common reed",
+        type: "Grass"
+    },
+    {
+        name: "Pueraria montana",
+        common_name: "Kudzu",
+        type: "Vine"
+    },
+    {
+        name: "Reynoutria japonica",
+        common_name: "Japanese knotweed",
+        type: "Herb"
+    },
+    {
+        name: "Rosa multiflora",
+        common_name: "Multiflora rose",
+        type: "Shrub"
+    },
+    {
+        name: "Rubus phoenicolasius",
+        common_name: "Wineberry",
+        type: "Shrub"
+    },
+    {
+        name: "Sorghum halepense",
+        common_name: "Johnsongrass",
+        type: "Grass"
+    },
+    {
+        name: "Trapa bispinosa",
+        common_name: "Two-horned trapa",
+        type: "Aquatic"
+    },
+    {
+        name: "Triadica sebifera",
+        common_name: "Chinese tallow-tree",
+        type: "Tree"
+    },
+    {
+        name: "Vitex rotundifolia",
+        common_name: "Beach vitex",
+        type: "Shrub"
     },
     {
         name: "Sus scrofa",
-        common_name: "Feral Pig",
-        type: "Mammal",
-        description: "Destructive mammal that damages soil and native vegetation"
+        common_name: "Feral Swine",
+        type: "Mammal"
     },
-    // Birds
-    {
-        name: "Sturnus vulgaris",
-        common_name: "European Starling",
-        type: "Bird",
-        description: "Aggressive bird that competes with native cavity-nesters"
-    },
-    {
-        name: "Passer domesticus",
-        common_name: "House Sparrow",
-        type: "Bird",
-        description: "Invasive bird that displaces native species"
-    },
-    {
-        name: "Cygnus olor",
-        common_name: "Mute Swan",
-        type: "Bird",
-        description: "Large waterfowl that damages aquatic vegetation"
-    },
-    // Fish
-    {
-        name: "Channa argus",
-        common_name: "Northern Snakehead",
-        type: "Fish",
-        description: "Predatory fish that impacts native aquatic species"
-    },
-    {
-        name: "Ictalurus furcatus",
-        common_name: "Blue Catfish",
-        type: "Fish",
-        description: "Large catfish that outcompetes native species"
-    },
-    {
-        name: "Cyprinus carpio",
-        common_name: "Common Carp",
-        type: "Fish",
-        description: "Bottom-feeding fish that degrades water quality"
-    },
-    // Reptiles and Amphibians
-    {
-        name: "Trachemys scripta elegans",
-        common_name: "Red-Eared Slider",
-        type: "Reptile",
-        description: "Turtle that competes with native species"
-    },
-    // Insects
     {
         name: "Lycorma delicatula",
         common_name: "Spotted Lanternfly",
-        type: "Insect",
-        description: "Plant hopper that damages trees and crops"
+        type: "Insect"
     },
     {
         name: "Agrilus planipennis",
         common_name: "Emerald Ash Borer",
-        type: "Insect",
-        description: "Beetle that kills ash trees"
+        type: "Insect"
     },
     {
-        name: "Anoplophora glabripennis",
-        common_name: "Asian Longhorned Beetle",
-        type: "Insect",
-        description: "Wood-boring beetle that kills hardwood trees"
+        name: "Rapana venosa",
+        common_name: "Rapa Whelk",
+        type: "Mollusk"
+    },
+
+    // Additional Plants
+    {
+        name: "Pyrus calleryana",
+        common_name: "Callery Pear",
+        type: "Tree"
     },
     {
-        name: "Halyomorpha halys",
-        common_name: "Brown Marmorated Stink Bug",
-        type: "Insect",
-        description: "Agricultural pest that damages crops"
-    },
-    {
-        name: "Adelges tsugae",
-        common_name: "Hemlock Woolly Adelgid",
-        type: "Insect",
-        description: "Insect that kills hemlock trees"
-    },
-    {
-        name: "Lymantria dispar dispar",
-        common_name: "Gypsy Moth",
-        type: "Insect",
-        description: "Caterpillar that defoliates trees"
-    },
-    {
-        name: "Aedes albopictus",
-        common_name: "Asian Tiger Mosquito",
-        type: "Insect",
-        description: "Disease-carrying mosquito"
-    },
-    // Mollusks
-    {
-        name: "Dreissena polymorpha",
-        common_name: "Zebra Mussel",
-        type: "Mollusk",
-        description: "Filter feeder that alters aquatic ecosystems"
-    },
-    {
-        name: "Corbicula fluminea",
-        common_name: "Asian Clam",
-        type: "Mollusk",
-        description: "Clam that alters aquatic habitats"
-    },
-    // Plants - Trees and Shrubs
-    {
-        name: "Ailanthus altissima",
-        common_name: "Tree of Heaven",
-        type: "Tree",
-        description: "Fast-growing tree that displaces native species"
-    },
-    {
-        name: "Elaeagnus umbellata",
-        common_name: "Autumn Olive",
-        type: "Shrub",
-        description: "Shrub that alters soil chemistry"
-    },
-    {
-        name: "Berberis thunbergii",
-        common_name: "Japanese Barberry",
-        type: "Shrub",
-        description: "Thorny shrub that forms dense thickets"
-    },
-    {
-        name: "Paulownia tomentosa",
-        common_name: "Princess Tree",
-        type: "Tree",
-        description: "Fast-growing tree that outcompetes native species"
-    },
-    {
-        name: "Ligustrum sinense",
-        common_name: "Chinese Privet",
-        type: "Shrub",
-        description: "Shrub that forms dense understory thickets"
-    },
-    // Vines
-    {
-        name: "Pueraria montana",
-        common_name: "Kudzu",
-        type: "Vine",
-        description: "Aggressive vine that smothers native vegetation"
-    },
-    {
-        name: "Lonicera japonica",
-        common_name: "Japanese Honeysuckle",
-        type: "Vine",
-        description: "Vine that overwhelms native vegetation"
-    },
-    {
-        name: "Celastrus orbiculatus",
-        common_name: "Oriental Bittersweet",
-        type: "Vine",
-        description: "Woody vine that strangles trees"
-    },
-    // Herbaceous Plants
-    {
-        name: "Alliaria petiolata",
-        common_name: "Garlic Mustard",
-        type: "Herb",
-        description: "Herb that inhibits native plant growth"
-    },
-    {
-        name: "Lythrum salicaria",
-        common_name: "Purple Loosestrife",
-        type: "Herb",
-        description: "Wetland plant that crowds out natives"
+        name: "Phragmites australis",
+        common_name: "Common Reed",
+        type: "Grass"
     },
     {
         name: "Microstegium vimineum",
-        common_name: "Japanese Stiltgrass",
-        type: "Grass",
-        description: "Annual grass that forms dense mats"
-    },
-    // Aquatic Plants
-    {
-        name: "Hydrilla verticillata",
-        common_name: "Hydrilla",
-        type: "Aquatic",
-        description: "Submerged plant that clogs waterways"
-    },
-    {
-        name: "Trapa natans",
-        common_name: "Water Chestnut",
-        type: "Aquatic",
-        description: "Floating plant that forms dense mats"
-    },
-    {
-        name: "Myriophyllum spicatum",
-        common_name: "Eurasian Watermilfoil",
-        type: "Aquatic",
-        description: "Submerged plant that dominates water bodies"
-    },
-    {
-        name: "Egeria densa",
-        common_name: "Brazilian Waterweed",
-        type: "Aquatic",
-        description: "Aquatic plant that forms dense colonies"
+        common_name: "Japanese Stilt Grass",
+        type: "Grass"
     }
 ];
 
@@ -266,12 +322,6 @@ const TAXONOMIC_GROUPS = {
     'Insecta-coleoptera': ['Lightning Bug', 'Lady Beetle', 'Japanese Beetle', 'Ground Beetle', 'Click Beetle'],
     'Insecta-odonata': ['Common Whitetail', 'Blue Dasher', 'Eastern Pondhawk', 'Widow Skimmer', 'Ebony Jewelwing'],
     'Insecta-all': []  // Change to All Insects
-};
-
-// Add after the TAXONOMIC_GROUPS constant
-const WEATHER_API = {
-    station: 'KDCA', // Washington DC station
-    baseUrl: 'https://api.weather.gov/stations/'
 };
 
 // Initialize map
@@ -1237,118 +1287,7 @@ async function updateBiodiversityStats(observations, singleSpecies = false) {
                 maintainAspectRatio: false
             }
         });
-
-        // Add the climatic correlation chart
-        addClimaticChart(observations, document.getElementById('climaticChart'));
     }
-}
-
-// Add new function to fetch weather data
-async function getWeatherData(date) {
-    const dateStr = date.toISOString().split('T')[0];
-    try {
-        const response = await fetch(`${WEATHER_API.baseUrl}${WEATHER_API.station}/observations?start=${dateStr}&end=${dateStr}`);
-        const data = await response.json();
-        return {
-            date: dateStr,
-            temp: data.features[0]?.properties?.temperature?.value || null,
-            precip: data.features[0]?.properties?.precipitation?.value || null
-        };
-    } catch (error) {
-        console.warn(`Failed to fetch weather for ${dateStr}:`, error);
-        return null;
-    }
-}
-
-// Add correlation analysis function
-async function analyzeClimaticCorrelation(observations) {
-    const weatherCache = new Map();
-    const correlationData = [];
-
-    for (const obs of observations) {
-        const date = new Date(obs.observed_on);
-        const dateKey = date.toISOString().split('T')[0];
-        
-        if (!weatherCache.has(dateKey)) {
-            weatherCache.set(dateKey, await getWeatherData(date));
-        }
-        
-        const weather = weatherCache.get(dateKey);
-        if (weather?.temp !== null) {
-            correlationData.push({
-                temp: weather.temp,
-                count: 1,
-                date: dateKey
-            });
-        }
-    }
-
-    // Aggregate by date
-    const aggregated = correlationData.reduce((acc, curr) => {
-        const existing = acc.find(x => x.date === curr.date);
-        if (existing) {
-            existing.count++;
-        } else {
-            acc.push(curr);
-        }
-        return acc;
-    }, []);
-
-    return aggregated;
-}
-
-// Add to updateBiodiversityStats function, before the final closing brace
-async function addClimaticChart(data, container) {
-    const correlationData = await analyzeClimaticCorrelation(data);
-    
-    const ctx = document.createElement('canvas');
-    container.appendChild(ctx);
-
-    new Chart(ctx, {
-        type: 'scatter',
-        data: {
-            datasets: [{
-                label: 'Observations vs Temperature',
-                data: correlationData.map(d => ({
-                    x: d.temp,
-                    y: d.count
-                })),
-                backgroundColor: 'rgba(76, 175, 80, 0.5)'
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                title: {
-                    display: true,
-                    text: 'Temperature Correlation'
-                },
-                tooltip: {
-                    callbacks: {
-                        label: (context) => {
-                            return `${context.raw.y} observations at ${context.raw.x.toFixed(1)}°C`;
-                        }
-                    }
-                }
-            },
-            scales: {
-                x: {
-                    title: {
-                        display: true,
-                        text: 'Temperature (°C)'
-                    }
-                },
-                y: {
-                    title: {
-                        display: true,
-                        text: 'Number of Observations'
-                    },
-                    beginAtZero: true
-                }
-            }
-        }
-    });
 }
 
 // UI Helper functions
@@ -1405,136 +1344,126 @@ function showSpeciesDetail(species, data) {
     };
 }
 
-// Initialize everything when DOM is loaded
+// Remove all the duplicate DOMContentLoaded event listeners and consolidate into one
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialize main functionality
     populateYearFilter();
     initializeDashboard();
-    populateSpeciesSearch();  // Add this line to initialize species search
+    populateSpeciesSearch();
+
+    // Initialize all event listeners
+    initializeEventListeners();
+});
+
+// Update the initializeEventListeners function
+function initializeEventListeners() {
+    // Guide panel functionality
+    const guideButton = document.getElementById('guideToggle');
+    const guidePanel = document.getElementById('guidePanel');
     
-    // Add filter listeners
+    if (guideButton && guidePanel) {
+        guideButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            const isVisible = guidePanel.classList.contains('visible');
+            guidePanel.classList.toggle('visible');
+            guideButton.innerHTML = isVisible ? 
+                '<span>��️</span> Guide & Resources' : 
+                '<span>✖️</span> Close Guide';
+        });
+
+        // Close panel when clicking outside
+        document.addEventListener('click', (e) => {
+            if (guidePanel.classList.contains('visible') && 
+                !guidePanel.contains(e.target) && 
+                !guideButton.contains(e.target)) {
+                guidePanel.classList.remove('visible');
+                guideButton.innerHTML = '<span>ℹ️</span> Guide & Resources';
+            }
+        });
+    }
+
+    // Filter listeners - use optional chaining for safety
     document.getElementById('taxonomicFilter')?.addEventListener('change', handleFilterChange);
     document.getElementById('yearFilter')?.addEventListener('change', handleFilterChange);
+    document.getElementById('speciesSearch')?.addEventListener('input', handleSpeciesSearch);
+    document.getElementById('resetFilters')?.addEventListener('click', handleResetFilters);
     
-    document.querySelectorAll('.season-buttons button')
-        .forEach(btn => btn.addEventListener('click', handleSeasonSelect));
+    // Initialize season buttons
+    initializeSeasonButtons();
     
-    document.getElementById('speciesSearch').addEventListener('input', (e) => {
-        const searchTerm = e.target.value.toLowerCase();
-        if (searchTerm.length > 0) {
-            const options = document.querySelectorAll('#speciesOptions option');
-            const match = Array.from(options).find(option => option.value.toLowerCase() === searchTerm);
-            if (match) {
-                filterMapBySpecies(match.value);
-            }
-        }
-    });
+    // Initialize special filters
+    initializeSpecialFilters();
+}
 
-    // Add event listener for help button
-    document.getElementById('helpToggle').addEventListener('click', () => {
-        const helpPanel = document.getElementById('helpPanel');
-        helpPanel.classList.toggle('visible');
-    });
-    
-    // Add reset button handler
-    document.getElementById('resetFilters').addEventListener('click', () => {
-        // Reset all filters
-        document.getElementById('taxonomicFilter').value = 'all';
-        document.getElementById('speciesSearch').value = '';
-        document.querySelectorAll('.season-buttons button').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        document.querySelector('[data-season="all"]').classList.add('active');
-        
-        // Reset the map and display
-        resetMapFilter();
-    });
+// Add these helper functions for event handlers
+function handleSpeciesSearch(e) {
+    const searchTerm = e.target.value.toLowerCase();
+    if (searchTerm.length > 0) {
+        const options = document.querySelectorAll('#speciesOptions option');
+        const match = Array.from(options).find(option => 
+            option.value.toLowerCase() === searchTerm);
+        if (match) {
+            filterMapBySpecies(match.value);
+        }
+    }
+}
 
-    // Add pollinator filter button listener
-    document.getElementById('pollinatorFilter').addEventListener('click', function() {
-        // Toggle active state
-        this.classList.toggle('active');
-        
-        // Remove other active states from other filter buttons
-        document.querySelectorAll('.filter-button').forEach(btn => {
-            if (btn !== this) btn.classList.remove('active');
-        });
-        
-        if (this.classList.contains('active')) {
-            filterPollinatorSpecies();
-        } else {
-            resetMapFilter();
-        }
+function handleResetFilters() {
+    document.getElementById('taxonomicFilter').value = 'all';
+    document.getElementById('speciesSearch').value = '';
+    document.querySelectorAll('.season-buttons button').forEach(btn => {
+        btn.classList.remove('active');
     });
-    
-    // Add event listener for invasive species filter
-    document.getElementById('invasiveFilter')?.addEventListener('click', function() {
-        this.classList.toggle('active');
-        
-        // Remove other active states from other filter buttons
-        document.querySelectorAll('.filter-button').forEach(btn => {
-            if (btn !== this) btn.classList.remove('active');
-        });
-        
-        if (this.classList.contains('active')) {
-            filterInvasiveSpecies();
-        } else {
-            resetMapFilter();
-        }
-    });
-
-    // Add event listener for protected species filter
-    document.getElementById('protectedFilter')?.addEventListener('click', function() {
-        this.classList.toggle('active');
-        
-        // Remove other active states from other filter buttons
-        document.querySelectorAll('.filter-button').forEach(btn => {
-            if (btn !== this) btn.classList.remove('active');
-        });
-        
-        if (this.classList.contains('active')) {
-            filterProtectedSpecies();
-        } else {
-            resetMapFilter();
-        }
-    });
-
-    // Add event listener for credits button
-    document.getElementById('creditsToggle').addEventListener('click', () => {
-        const creditsPanel = document.getElementById('creditsPanel');
-        const helpPanel = document.getElementById('helpPanel');
-        
-        // Hide help panel if it's visible
-        if (helpPanel.classList.contains('visible')) {
-            helpPanel.classList.remove('visible');
-        }
-        
-        creditsPanel.classList.toggle('visible');
-    });
-
-    // Modify help button to also close credits panel
-    document.getElementById('helpToggle').addEventListener('click', () => {
-        const helpPanel = document.getElementById('helpPanel');
-        const creditsPanel = document.getElementById('creditsPanel');
-        
-        // Hide credits panel if it's visible
-        if (creditsPanel.classList.contains('visible')) {
-            creditsPanel.classList.remove('visible');
-        }
-        
-        helpPanel.classList.toggle('visible');
-    });
-});
+    document.querySelector('[data-season="all"]')?.classList.add('active');
+    resetMapFilter();
+}
 
 // Filter handling functions
 function handleFilterChange() {
     const filter = {
         taxonomicGroup: document.getElementById('taxonomicFilter').value,
-        year: document.getElementById('yearFilter').value
+        year: document.getElementById('yearFilter').value,
+        invasive: document.getElementById('invasiveFilter').classList.contains('active'),
+        pollinator: document.getElementById('pollinatorFilter').classList.contains('active'),
+        protected: document.getElementById('protectedFilter').classList.contains('active')
     };
     
     loadYearlyData([filter.year]).then(data => {
-        const filteredData = filterObservations(data, filter);
+        let filteredData = filterObservations(data, filter);
         
+        // Apply invasive species filter if active
+        if (filter.invasive) {
+            filteredData = filteredData.filter(obs => 
+                INVASIVE_SPECIES.some(invasive => 
+                    (obs.scientific_name && obs.scientific_name.toLowerCase() === invasive.name.toLowerCase()) ||
+                    (obs.common_name && obs.common_name.toLowerCase() === invasive.common_name.toLowerCase())
+                )
+            );
+        }
+
+        // Apply pollinator species filter if active
+        if (filter.pollinator) {
+            filteredData = filteredData.filter(obs => 
+                POLLINATOR_SPECIES.includes(obs.common_name)
+            );
+        }
+
+        // Apply protected species filter if active
+        if (filter.protected) {
+            const allProtectedSpecies = Object.values(PROTECTED_SPECIES)
+                .flat()
+                .map(species => ({
+                    commonName: species.name.toLowerCase(),
+                    scientificName: species.scientific.toLowerCase()
+                }));
+            filteredData = filteredData.filter(obs => 
+                allProtectedSpecies.some(protected => 
+                    (obs.common_name || '').toLowerCase() === protected.commonName ||
+                    (obs.scientific_name || '').toLowerCase() === protected.scientificName
+                )
+            );
+        }
+
         // Update map with filtered data
         updateMap(filteredData);
         
@@ -1557,10 +1486,50 @@ function handleSeasonSelect(event) {
     event.target.classList.add('active');
     
     const year = document.getElementById('yearFilter').value;
-    const filter = { season: season === 'all' ? null : season, year };
+    const filter = { 
+        season: season === 'all' ? null : season, 
+        year,
+        invasive: document.getElementById('invasiveFilter').classList.contains('active'),
+        pollinator: document.getElementById('pollinatorFilter').classList.contains('active'),
+        protected: document.getElementById('protectedFilter').classList.contains('active')
+    };
     
     loadYearlyData([year]).then(data => {
-        const filteredData = filterObservations(data, filter);
+        let filteredData = filterObservations(data, filter);
+        
+        // Apply invasive species filter if active
+        if (filter.invasive) {
+            filteredData = filteredData.filter(obs => 
+                INVASIVE_SPECIES.some(invasive => 
+                    (obs.scientific_name && obs.scientific_name.toLowerCase() === invasive.name.toLowerCase()) ||
+                    (obs.common_name && obs.common_name.toLowerCase() === invasive.common_name.toLowerCase())
+                )
+            );
+        }
+
+        // Apply pollinator species filter if active
+        if (filter.pollinator) {
+            filteredData = filteredData.filter(obs => 
+                POLLINATOR_SPECIES.includes(obs.common_name)
+            );
+        }
+
+        // Apply protected species filter if active
+        if (filter.protected) {
+            const allProtectedSpecies = Object.values(PROTECTED_SPECIES)
+                .flat()
+                .map(species => ({
+                    commonName: species.name.toLowerCase(),
+                    scientificName: species.scientific.toLowerCase()
+                }));
+            filteredData = filteredData.filter(obs => 
+                allProtectedSpecies.some(protected => 
+                    (obs.common_name || '').toLowerCase() === protected.commonName ||
+                    (obs.scientific_name || '').toLowerCase() === protected.scientificName
+                )
+            );
+        }
+
         updateMap(filteredData);
         updateBiodiversityStats(filteredData);  // Update stats with filtered data
         displayLatestDiscoveries(filteredData, filter);
@@ -2064,3 +2033,162 @@ if (singleSpecies && observations.length > 0) {
     
     // ...rest of existing code...
 }
+
+// Replace help and credits toggle listeners with a single guide toggle
+document.addEventListener('DOMContentLoaded', () => {
+    // ...existing initialization code...
+
+    // Replace existing help and credits button listeners with this:
+    document.getElementById('guideToggle')?.addEventListener('click', () => {
+        const guidePanel = document.getElementById('guidePanel');
+        guidePanel?.classList.toggle('visible');
+    });
+
+    // ...rest of existing initialization code...
+});
+
+// ...existing code...
+
+// Replace the existing guide toggle listener with this updated version
+document.addEventListener('DOMContentLoaded', () => {
+    // Update guide button functionality
+    const guideButton = document.getElementById('guideToggle');
+    const guidePanel = document.getElementById('guidePanel');
+    
+    if (guideButton && guidePanel) {
+        guideButton.addEventListener('click', (e) => {
+            e.preventDefault(); // Prevent default button behavior
+            const isVisible = guidePanel.classList.contains('visible');
+            
+            // Toggle the visibility class
+            guidePanel.classList.toggle('visible');
+            
+            // Update button text
+            guideButton.innerHTML = isVisible ? 
+                '<span>ℹ️</span> Guide & Resources' : 
+                '<span>✖️</span> Close Guide';
+        });
+
+        // Close panel when clicking outside
+        document.addEventListener('click', (e) => {
+            if (guidePanel.classList.contains('visible') && 
+                !guidePanel.contains(e.target) && 
+                !guideButton.contains(e.target)) {
+                guidePanel.classList.remove('visible');
+                guideButton.innerHTML = '<span>ℹ️</span> Guide & Resources';
+            }
+        });
+    }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+
+});
+
+// Replace all existing DOMContentLoaded event listeners with this single one
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialize main functionality
+    populateYearFilter();
+    initializeDashboard();
+    populateSpeciesSearch();
+
+    // Initialize all event listeners
+    initializeEventListeners();
+});
+
+// Add new function to consolidate all event listeners
+function initializeEventListeners() {
+    // Guide panel functionality
+    const guideButton = document.getElementById('guideToggle');
+    const guidePanel = document.getElementById('guidePanel');
+    
+    if (guideButton && guidePanel) {
+        guideButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            const isVisible = guidePanel.classList.contains('visible');
+            guidePanel.classList.toggle('visible');
+            guideButton.innerHTML = isVisible ? 
+                '<span>ℹ️</span> Guide & Resources' : 
+                '<span>✖️</span> Close Guide';
+        });
+
+        // Close panel when clicking outside
+        document.addEventListener('click', (e) => {
+            if (guidePanel.classList.contains('visible') && 
+                !guidePanel.contains(e.target) && 
+                !guideButton.contains(e.target)) {
+                guidePanel.classList.remove('visible');
+                guideButton.innerHTML = '<span>ℹ️</span> Guide & Resources';
+            }
+        });
+    }
+
+    // Filter listeners
+    document.getElementById('taxonomicFilter')?.addEventListener('change', handleFilterChange);
+    document.getElementById('yearFilter')?.addEventListener('change', handleFilterChange);
+    
+    // Species search
+    document.getElementById('speciesSearch')?.addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+        if (searchTerm.length > 0) {
+            const options = document.querySelectorAll('#speciesOptions option');
+            const match = Array.from(options).find(option => 
+                option.value.toLowerCase() === searchTerm);
+            if (match) {
+                filterMapBySpecies(match.value);
+            }
+        }
+    });
+
+    // Reset button
+    document.getElementById('resetFilters')?.addEventListener('click', () => {
+        document.getElementById('taxonomicFilter').value = 'all';
+        document.getElementById('speciesSearch').value = '';
+        document.querySelectorAll('.season-buttons button').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.querySelector('[data-season="all"]').classList.add('active');
+        resetMapFilter();
+    });
+
+    // Special filter buttons
+    initializeSpecialFilters();
+    
+    // Season buttons
+    document.querySelectorAll('.season-buttons button').forEach(btn => {
+        btn.addEventListener('click', handleSeasonSelect);
+    });
+}
+
+// Add new function to handle special filters
+function initializeSpecialFilters() {
+    const filters = ['invasiveFilter', 'pollinatorFilter', 'protectedFilter'];
+    
+    filters.forEach(filterId => {
+        const button = document.getElementById(filterId);
+        if (button) {
+            button.addEventListener('click', function() {
+                this.classList.toggle('active');
+                
+                // Remove active state from other filter buttons
+                filters.forEach(otherId => {
+                    if (otherId !== filterId) {
+                        document.getElementById(otherId)?.classList.remove('active');
+                    }
+                });
+                
+                if (this.classList.contains('active')) {
+                    switch(filterId) {
+                        case 'invasiveFilter': filterInvasiveSpecies(); break;
+                        case 'pollinatorFilter': filterPollinatorSpecies(); break;
+                        case 'protectedFilter': filterProtectedSpecies(); break;
+                    }
+                } else {
+                    resetMapFilter();
+                }
+            });
+        }
+    });
+}
+
+// ...rest of existing code...
