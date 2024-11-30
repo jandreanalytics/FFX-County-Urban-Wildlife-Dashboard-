@@ -81,24 +81,11 @@ A dynamic wildlife observation dashboard tracking biodiversity in Fairfax County
 - Environmental impact reporting
 - Real-time weather correlation
 
-## 💻 Local Development
-
-```bash
-# Clone the repository
-git clone https://github.com/yourusername/ffx-wildlife-watch.git
-
-# Navigate to project directory
-cd ffx-wildlife-watch
-
-# Open in browser
-# Use a local server like Live Server for development
-
 📝 License
 This project is open source and available under the MIT License.
 
 📬 Contact & Links
-Portfolio: 
-LinkedIn: [Your LinkedIn]
+LinkedIn: https://www.linkedin.com/in/jeremy-andre-a18925241/
 Email: jeremykandre2@gmail.com
 🙏 Acknowledgments
 Special thanks to:
