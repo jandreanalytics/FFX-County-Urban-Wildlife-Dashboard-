@@ -78,8 +78,9 @@ A dynamic wildlife observation dashboard tracking biodiversity in Fairfax County
 - This project is open source and available under the MIT License.
 
 ## 📬 Contact & Links
-- LinkedIn: https://www.linkedin.com/in/jeremy-andre-a18925241/
-- Email: jeremykandre2@gmail.com
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/jeremy-andre-a18925241/)  
+[![Email](https://img.shields.io/badge/Email-D14836?style=flat-square&logo=gmail&logoColor=white)](mailto:jeremykandre2@gmail.com)
+
 
 ## 🙏 Special Thanks To
 - iNaturalist for providing wildlife observation data
